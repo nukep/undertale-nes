@@ -1,0 +1,14 @@
+A macro or subroutine name may advertise which registers it doesn't clobber.
+
+Unclobbered registers are prefixed with a backslash.
+
+\axyp leaves A, X, Y and P (processor flags) unclobbered.
+
+e.g.
+some_amazing_macro[\ax.value'a.count'y]
+
+This macro keeps a and x at their original values, and accepts two parmeters:
+"value" is the A register.
+"count" is the Y register.
+
+If a macro or subroutine has no signature, then it's implied that it clobbers all registers.

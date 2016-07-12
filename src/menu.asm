@@ -1,0 +1,162 @@
+{text_menu("LesserDogAppears", "Lesser Dog appears.")}
+{text_menu("LesserDogCheck",
+  "LESSER DOG - ATK 7 DEF 0", "Wields a stone dogger made of pomer-granite."
+)}
+
+macro menu.set_option_attributes a,b,c,d
+graphics.attribute_value_all.v=a
+a_attr=graphics.attribute_value_all
+
+graphics.attribute_value_all.v=b
+b_attr=graphics.attribute_value_all
+
+graphics.attribute_value_all.v=c
+c_attr=graphics.attribute_value_all
+
+graphics.attribute_value_all.v=d
+d_attr=graphics.attribute_value_all
+
+graphics.attribute_addr.x=0
+graphics.attribute_addr.y=24
+ldx DRAW_BUFFER_SIZE
+txa
+clc
+adc #(3+16)
+sta DRAW_BUFFER_SIZE
+
+lda #>(graphics.attribute_addr)
+sta DRAW_BUFFER,x
+lda #<(graphics.attribute_addr)
+sta DRAW_BUFFER+1,x
+lda #16
+sta DRAW_BUFFER+2,x
+
+lda #a_attr
+buffer=DRAW_BUFFER+3
+sta buffer+0,x
+sta buffer+1,x
+sta buffer+8,x
+sta buffer+9,x
+
+lda #b_attr
+buffer=DRAW_BUFFER+3+2
+sta buffer+0,x
+sta buffer+1,x
+sta buffer+8,x
+sta buffer+9,x
+
+lda #c_attr
+buffer=DRAW_BUFFER+3+4
+sta buffer+0,x
+sta buffer+1,x
+sta buffer+8,x
+sta buffer+9,x
+
+lda #d_attr
+buffer=DRAW_BUFFER+3+6
+sta buffer+0,x
+sta buffer+1,x
+sta buffer+8,x
+sta buffer+9,x
+endm
+
+menu.selection=GENVAR0
+menu:
+  lda #0
+  sta menu.selection
+  initialize_text_generator LesserDogAppears, LesserDogAppears.size
+-
+  jsr menu.check_buttons
+  stx TEMP0
+  jsr menu.change_selection
+  ldx TEMP0
+  cpx #0
+  beq +
+  initialize_generator SFX_GENERATOR, play_select_sfx
++
+  lda menu.selection
+  ; x = menu.selection*64 + 8
+  asl_n 6
+  adc #8
+  sta graphics.draw_heart_sprite.x
+  lda #(26*8+1)
+  sta graphics.draw_heart_sprite.y
+  jsr graphics.draw_heart_sprite
+
+  jsr menu.color_selection
+
+  jsr yield
+
+  joy.is_button_tapped BUTTON.A
+  bne +
+  clear_generator TEXT_GENERATOR
+  ldy #0
+--
+  sty graphics.clear_menu_text.y
+  tya
+  pha
+  jsr graphics.clear_menu_text
+  jsr yield
+  pla
+  tay
+  iny
+  cpy #6
+  bne --
+  initialize_text_generator LesserDogCheck, LesserDogCheck.size
++
+  jmp -
+
+; returns with x = -1, 0, or +1
+; if left or right was pressed, z will be clear
+menu.check_buttons:
+  ldx #0
+  joy.is_button_tapped BUTTON.LEFT
+  bne +
+  dex
++
+  joy.is_button_tapped BUTTON.RIGHT
+  bne +
+  inx
++
+  rts
+
+menu.change_selection:
+  txa
+  clc
+  adc menu.selection
+  cmp #$FF
+  bne +
+  lda #0
++
+  cmp #4
+  bne +
+  lda #3
++
+  sta menu.selection
+  rts
+
+menu.color_selection:
+  lda menu.selection
+  asl
+  tax
+  lda @lookup,x
+  sta TEMP0
+  inx
+  lda @lookup,x
+  sta TEMP1
+  jmp (TEMP0)
+
+@lookup:
+  .dw @0,@1,@2,@3
+@0:
+  menu.set_option_attributes 2,1,1,1
+  rts
+@1:
+  menu.set_option_attributes 1,2,1,1
+  rts
+@2:
+  menu.set_option_attributes 1,1,2,1
+  rts
+@3:
+  menu.set_option_attributes 1,1,1,2
+  rts
