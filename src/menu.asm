@@ -64,6 +64,7 @@ menu.selection=GENVAR0
 menu:
   lda #0
   sta menu.selection
+--
   initialize_text_generator LesserDogAppears, LesserDogAppears.size
 -
   jsr menu.check_buttons
@@ -88,10 +89,34 @@ menu:
   jsr yield
 
   joy.is_button_tapped BUTTON.A
+  bne -
+  jsr menu.clear_text
+  lda menu.selection
+  pha
+  cmp #1
   bne +
+  jsr menu.some_menu
+  jsr menu.clear_text
++
+  pla
+  sta menu.selection
+
+  jmp --
+
+menu.some_menu:
+  initialize_text_generator LesserDogCheck, LesserDogCheck.size
+-
+  joy.is_button_tapped BUTTON.B
+  bne +
+  rts
++
+  jsr yield
+  jmp -
+
+menu.clear_text:
   clear_generator TEXT_GENERATOR
   ldy #0
---
+-
   sty graphics.clear_menu_text.y
   tya
   pha
@@ -101,10 +126,8 @@ menu:
   tay
   iny
   cpy #6
-  bne --
-  initialize_text_generator LesserDogCheck, LesserDogCheck.size
-+
-  jmp -
+  bne -
+  rts
 
 ; returns with x = -1, 0, or +1
 ; if left or right was pressed, z will be clear

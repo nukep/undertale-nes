@@ -26,7 +26,9 @@ include "graphic_Options.asm"
 {include("joy.asm")}
 {include("audio.asm")}
 {include("graphics.asm")}
+{include("text.asm")}
 {include("print-text.asm")}
+{include("animate_lesser_dog.asm")}
 {include("menu.asm")}
 
 reset:
@@ -90,6 +92,7 @@ reset:
 
   initialize_generator MENU_GENERATOR, menu
   clear_generator SFX_GENERATOR
+  initialize_generator LESSER_DOG_GENERATOR, animate_lesser_dog
 
   jsr graphics.draw_buffer_init
   jsr graphics.oam_init
@@ -164,6 +167,7 @@ nmi_no_ppu_after_this_point:
 
   iterate_generator MENU_GENERATOR
   iterate_generator TEXT_GENERATOR
+  iterate_generator LESSER_DOG_GENERATOR
 
   pla ; SCREEN_SPLIT_ENABLED
   bne +

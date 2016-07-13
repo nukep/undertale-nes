@@ -1,14 +1,13 @@
-def byte(b):
-    return ".db ${:02x}".format(b)
-
 def bytes(label, a):
-    x = ' '.join(["{:02x}".format(b&0xFF) for b in a])
-    return """{label}.size={size}
-{label}:
-HEX {x}
-""".format(label=label,size=len(a),x=x)
+    out = """{label}.size={size}
+{label}:""".format(size=len(a), label=label)
 
-def text(label, s):
+    for b in a:
+        out += ".db {}\n".format(b)
+
+    return out
+
+def text(s):
     def map_chr(c):
         if (c >= 'A' and c <= 'Z'):
             return ord(c)-ord('A')
@@ -26,8 +25,21 @@ def text(label, s):
         elif c == '\n': return 0xFF
         else:
             raise Exception("Unknown character: {}".format(c))
+    return [map_chr(c) for c in s]
 
-    return bytes(label, [map_chr(c) for c in s])
+def xy_addr(x, y, nametable=0):
+    return 0x2000 + nametable*0x400 + y*32 + x
+
+def lookup_table_lo_hi(label_lo, label_hi, *longs):
+    lo = '\n'.join([".db <({})".format(b) for b in longs])
+    hi = '\n'.join([".db >({})".format(b) for b in longs])
+
+    return """{label_lo}:
+{lo}
+
+{label_hi}:
+{hi}
+""".format(label_lo=label_lo, label_hi=label_hi, lo=lo, hi=hi)
 
 def text_menu(label, *s):
     import textwrap
@@ -37,4 +49,4 @@ def text_menu(label, *s):
         out = out + "* " + a[0] + "\n"
         for xx in a[1:]:
             out = out + "  " + xx + "\n"
-    return text(label, out.strip())
+    return bytes(label, text(out.strip()))

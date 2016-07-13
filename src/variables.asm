@@ -4,6 +4,11 @@
 ; They can be aliased to subroutine parameters.
 TEMP0   .dsb 1
 TEMP1   .dsb 1
+TEMP2   .dsb 1
+TEMP3   .dsb 1
+TEMP4   .dsb 1
+TEMP5   .dsb 1
+TEMP6   .dsb 1
 
 ; As a rule of thumb, these temporary variables cannot cross macro expansions.
 TEMP0_MACRO   .dsb 1
@@ -41,7 +46,8 @@ DRAW_BUFFER=$0300
 ; State machines
 .enum $0400
 ; Each structure is the size of GeneratorInfo.size, plus additional stack space
-TEXT_GENERATOR  .dsb GeneratorInfo.size+16
-MENU_GENERATOR     .dsb GeneratorInfo.size+16
-SFX_GENERATOR   .dsb GeneratorInfo.size+16
+TEXT_GENERATOR        .dsb GeneratorInfo.size+16
+MENU_GENERATOR        .dsb GeneratorInfo.size+16
+SFX_GENERATOR         .dsb GeneratorInfo.size+16
+LESSER_DOG_GENERATOR  .dsb GeneratorInfo.size+16
 .ende
