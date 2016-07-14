@@ -60,6 +60,16 @@ sta buffer+8,x
 sta buffer+9,x
 endm
 
+macro menu.transition_to f
+  jsr menu.clear_text
+  lda menu.selection
+  pha
+  jsr f
+  jsr menu.clear_text
+  pla
+  sta menu.selection
+endm
+
 menu.selection=GENVAR0
 menu.wait_for_selection.total_selections=GENVAR1
 menu:
@@ -91,18 +101,14 @@ menu:
 
   joy.is_button_tapped BUTTON.A
   bne -
-  jsr menu.clear_text
   lda menu.selection
-  pha
   cmp #1
   bne +
-  jsr menu.act
-  jsr menu.clear_text
-+
-  pla
-  sta menu.selection
-
+  menu.transition_to menu.act
   jmp --
++
+  jmp -
+
 
 {bytes("MENU_LESSER_DOG", text("* Lesser Dog"))}
 {bytes("MENU_CHECK", text("* Check"))}
@@ -120,13 +126,8 @@ menu.act:
   bne +
   rts
 +
-  jsr menu.clear_text
-  lda menu.selection
-  pha
-  jsr menu.lesser_dog_act
-  pla
-  sta menu.selection
-  jsr menu.clear_text
+
+  menu.transition_to menu.lesser_dog_act
   jmp -
 
 menu.lesser_dog_act:
@@ -147,10 +148,25 @@ menu.lesser_dog_act:
   bne +
   rts
 +
+  cmp #0
+  bne +
+  ; Check
+  menu.transition_to menu.lesser_dog_act_check
++
   jsr menu.clear_text
   clear_generator MENU_GENERATOR
   jsr yield
   rts
+
+menu.lesser_dog_act_check:
+  initialize_text_generator LesserDogCheck, LesserDogCheck.size
+-
+  joy.is_button_tapped BUTTON.A
+  bne +
+  rts
++
+  jsr yield
+  jmp -
 
 {bytes("MENU_HEART_X", [x*8-5 for x in [3, 17, 3, 17, 3, 17]])}
 {bytes("MENU_HEART_Y", [y*8-2 for y in [17, 17, 19, 19, 21, 21]])}
