@@ -61,6 +61,7 @@ sta buffer+9,x
 endm
 
 menu.selection=GENVAR0
+menu.wait_for_selection.total_selections=GENVAR1
 menu:
   lda #0
   sta menu.selection
@@ -95,7 +96,7 @@ menu:
   pha
   cmp #1
   bne +
-  jsr menu.some_menu
+  jsr menu.act
   jsr menu.clear_text
 +
   pla
@@ -103,13 +104,91 @@ menu:
 
   jmp --
 
-menu.some_menu:
-  initialize_text_generator LesserDogCheck, LesserDogCheck.size
+{bytes("MENU_LESSER_DOG", text("* Lesser Dog"))}
+{bytes("MENU_CHECK", text("* Check"))}
+{bytes("MENU_PET", text("* Pet"))}
+
+menu.act:
+  lda #0
+  sta menu.selection
 -
-  joy.is_button_tapped BUTTON.B
+  write_text_simple MENU_LESSER_DOG, MENU_LESSER_DOG.size, 4, 17
+  lda #1
+  sta menu.wait_for_selection.total_selections
+  jsr menu.wait_for_selection
+  cmp #$FF
   bne +
   rts
 +
+  jsr menu.clear_text
+  lda menu.selection
+  pha
+  jsr menu.lesser_dog_act
+  pla
+  sta menu.selection
+  jsr menu.clear_text
+  jmp -
+
+menu.lesser_dog_act:
+  lda #0
+  sta menu.selection
+  write_text_simple MENU_CHECK, MENU_CHECK.size, 4, 17
+  write_text_simple MENU_PET, MENU_PET.size, 18, 17
+  jsr yield
+  write_text_simple MENU_PET, MENU_PET.size, 4, 19
+  write_text_simple MENU_PET, MENU_PET.size, 18, 19
+  jsr yield
+  write_text_simple MENU_PET, MENU_PET.size, 4, 21
+  write_text_simple MENU_PET, MENU_PET.size, 18, 21
+  lda #6
+  sta menu.wait_for_selection.total_selections
+  jsr menu.wait_for_selection
+  cmp #$FF
+  bne +
+  rts
++
+  jsr menu.clear_text
+  clear_generator MENU_GENERATOR
+  jsr yield
+  rts
+
+{bytes("MENU_HEART_X", [x*8-5 for x in [3, 17, 3, 17, 3, 17]])}
+{bytes("MENU_HEART_Y", [y*8-2 for y in [17, 17, 19, 19, 21, 21]])}
+
+macro menu.wait_for_selection.on button, diff
+  joy.is_button_tapped button
+  bne +
+  lda menu.selection
+  clc
+  adc #diff
+  cmp menu.wait_for_selection.total_selections
+  bcs +
+  sta menu.selection
++
+endm
+
+menu.wait_for_selection:
+-
+  joy.is_button_tapped BUTTON.B
+  bne +
+  lda #$FF
+  rts
++
+  joy.is_button_tapped BUTTON.A
+  bne +
+  lda menu.selection
+  rts
++
+  menu.wait_for_selection.on BUTTON.UP, -2
+  menu.wait_for_selection.on BUTTON.DOWN, 2
+  menu.wait_for_selection.on BUTTON.LEFT, -1
+  menu.wait_for_selection.on BUTTON.RIGHT, 1
+  ldx menu.selection
+  lda MENU_HEART_X, x
+  sta graphics.draw_heart_sprite.x
+  lda MENU_HEART_Y, x
+  sta graphics.draw_heart_sprite.y
+  jsr graphics.draw_heart_sprite
   jsr yield
   jmp -
 

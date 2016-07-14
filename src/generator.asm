@@ -72,6 +72,15 @@ yield:
     i=i+1
   endr
 
+  ldy #GeneratorInfo.stack_size
+  lda (CURRENT_GENERATOR_INFO_LO), y
+  bne +
+  ; The generator has ended.
+  ldx CURRENT_GENERATOR_COPY_UNTIL
+  txs
+  rts
++
+
   ;; Copy stack
   tsx
   txa

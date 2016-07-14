@@ -1,3 +1,19 @@
+macro write_text_simple src, length, x, y
+  graphics.xy_to_addr.x = x
+  graphics.xy_to_addr.y = y
+  lda #<src
+  sta write_text.src_lo
+  lda #>src
+  sta write_text.src_hi
+  lda #<(graphics.xy_to_addr)
+  sta write_text.dest_lo
+  lda #>(graphics.xy_to_addr)
+  sta write_text.dest_hi
+  lda #length
+  sta write_text.src_length
+  jsr write_text
+endm
+
 macro write_text.from lookup
   lda write_text.src_length
   sta TEMP5
