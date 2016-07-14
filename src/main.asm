@@ -30,6 +30,7 @@ include "graphic_Options.asm"
 {include("print-text.asm")}
 {include("animate_lesser_dog.asm")}
 {include("menu.asm")}
+{include("battle.asm")}
 
 reset:
   sei        ; ignore IRQs

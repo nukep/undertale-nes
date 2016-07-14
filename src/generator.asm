@@ -191,6 +191,11 @@ macro clear_generator info
   sta info+GeneratorInfo.stack_size
 endm
 
+macro empty_current_generator_stack
+  ldx CURRENT_GENERATOR_COPY_UNTIL
+  txs
+endm
+
 macro push_current_generator
   lda CURRENT_GENERATOR_INFO_LO
   pha

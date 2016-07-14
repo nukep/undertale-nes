@@ -3,7 +3,7 @@
   "LESSER DOG - ATK 7 DEF 0\nWields a stone dogger made of pomer-granite."
 ))}
 
-{bytes_array("LesserDogPets",
+{bytes_array("LesserDogPet",
   [text_menu(x) for x in [
   # 0
   "You barely lifted your hand and Lesser Dog got excited.",
@@ -31,8 +31,8 @@
 ]])}
 
 ; The index is after pet #<index>. i.e. 0 is after the first pet.
-{lookup_table_lo_hi("LesserDogPetsLookup", *[
-  "LesserDogPets_"+str(i) for i in [
+{lookup_table_lo_hi("LesserDogPetLookup", *[
+  "LesserDogPet_"+str(i) for i in [
     0,1,2,3,4,5,6,7,8,9,10,11,12,
     *[13] * 6,
     *[14] * 12,
@@ -230,14 +230,27 @@ menu.lesser_dog_act:
   bne +
   ; Check
   menu.transition_to menu.lesser_dog_act_check
+  jmp ++
 +
+  menu.transition_to menu.lesser_dog_act_pet
+++
   jsr menu.clear_text
-  clear_generator MENU_GENERATOR
-  jsr yield
-  rts
+  ; Forget the state of the menu and jump right for the battle!
+  empty_current_generator_stack
+  jmp lesser_dog_battle
 
 menu.lesser_dog_act_check:
-  initialize_text_generator LesserDogCheck, LesserDogCheck.size
+  lda #<(LesserDogCheck)
+  sta print_text.src_lo
+  lda #>(LesserDogCheck)
+  sta print_text.src_hi
+  lda #(LesserDogCheck.size)
+  sta print_text.length
+  lda #2
+  sta print_text.x
+  lda #17
+  sta print_text.y
+  jsr print_text
 -
   joy.is_button_tapped BUTTON.A
   bne +
@@ -245,6 +258,28 @@ menu.lesser_dog_act_check:
 +
   jsr yield
   jmp -
+
+menu.lesser_dog_act_pet:
+  lda #<(LesserDogPet_0)
+  sta print_text.src_lo
+  lda #>(LesserDogPet_0)
+  sta print_text.src_hi
+  lda #(LesserDogPet_0.size)
+  sta print_text.length
+  lda #2
+  sta print_text.x
+  lda #17
+  sta print_text.y
+  jsr print_text
+-
+  joy.is_button_tapped BUTTON.A
+  bne +
+  rts
++
+  jsr yield
+  jmp -
+
+
 
 {bytes("MENU_HEART_X", [x*8-5 for x in [3, 17, 3, 17, 3, 17]])}
 {bytes("MENU_HEART_Y", [y*8-2 for y in [17, 17, 19, 19, 21, 21]])}
