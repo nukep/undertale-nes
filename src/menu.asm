@@ -5,6 +5,7 @@
 
 {bytes_array("LesserDogPets",
   [text_menu(x) for x in [
+  # 0
   "You barely lifted your hand and Lesser Dog got excited.",
   "You lightly touched the Dog.\nIt's already overexcited...",
   "You pet the Dog.\nIt raises its head up to meet your hand.",
@@ -18,14 +19,67 @@
   "You call the Dog but it is too late.\nIt cannot hear you.",
   "...",
   "You can reach Lesser Dog again.",
+  # 13
   "You pet Lesser Dog.",
   "It's possible that you may have a problem.",
   "Lesser Dog is unpettable but appreciates the attempt.",
   "Perhaps mankind was not meant to pet this much.",
   "It continues.",
   "Lesser Dog is beyond your reach.",
+  # 19
   "Really..."
 ]])}
+
+; The index is after pet #<index>. i.e. 0 is after the first pet.
+{lookup_table_lo_hi("LesserDogPetsLookup", *[
+  "LesserDogPets_"+str(i) for i in [
+    0,1,2,3,4,5,6,7,8,9,10,11,12,
+    *[13] * 6,
+    *[14] * 12,
+    *[15] * 10,
+    16,
+    *[17] * 6,
+    *[18] * 2,
+    19
+  ]
+])}
+
+{bytes_array("LesserDogPetStatus",
+  [text_menu(x) for x in [
+  "Lesser Dog is barking excitedly.",
+  "Lesser Dog is overstimulated.",
+  "Lesser Dog shows no signs of stopping.",
+  "Lesser Dog is lowering.",
+  "Lesser Dog is learning to read.",
+  "Lesser Dog is whining because it can't see you.",
+  "Hello there.",
+  "Lesser Dog is questioning your choices.",
+  "Lesser Dog has gone where no Dog has gone before."
+]])}
+
+; The index is after pet #<index>. i.e. 0 is after the first pet.
+{lookup_table_lo_hi("LesserDogPetStatusLookup", *[
+  "LesserDogPetStatus_"+str(i) for i in [
+    *[0]*3,
+    *[1]*4,
+    *[2]*6,
+    *[3]*18,
+    *[4]*2,
+    *[5]*9,
+    *[6]*3,
+    *[7]*7,
+    *[8]*2,
+]])}
+
+{bytes_array("LesserDogNeutral",
+  [text_menu(x) for x in [
+  "Lesser Dog cocks its head to one side.",
+  "Smells like dog chow.",
+  "Lesser Dog thinks your weapon is a dog treat.",
+  "Lesser Dog is really not paying attention."
+]])}
+
+{lookup_table_lo_hi("LesserDogNeutralLookup", *["LesserDogNeutral_"+str(i) for i in range(4)])}
 
 macro menu.set_option_attributes a,b,c,d
 graphics.attribute_value_all.v=a

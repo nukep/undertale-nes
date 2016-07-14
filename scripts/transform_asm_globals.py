@@ -33,16 +33,18 @@ def text(s):
 def xy_addr(x, y, nametable=0):
     return 0x2000 + nametable*0x400 + y*32 + x
 
-def lookup_table_lo_hi(label_lo, label_hi, *longs):
+def lookup_table_lo_hi(label, *longs):
     lo = '\n'.join([".db <({})".format(b) for b in longs])
     hi = '\n'.join([".db >({})".format(b) for b in longs])
 
-    return """{label_lo}:
+    return """
+{label}.size={size}
+{label}.lo:
 {lo}
 
-{label_hi}:
+{label}.hi:
 {hi}
-""".format(label_lo=label_lo, label_hi=label_hi, lo=lo, hi=hi)
+""".format(size=len(longs), label=label, lo=lo, hi=hi)
 
 def text_menu(s):
     import textwrap
