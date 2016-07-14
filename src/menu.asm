@@ -1,7 +1,31 @@
-{text_menu("LesserDogAppears", "Lesser Dog appears.")}
-{text_menu("LesserDogCheck",
-  "LESSER DOG - ATK 7 DEF 0", "Wields a stone dogger made of pomer-granite."
-)}
+{bytes("LesserDogAppears", text_menu("Lesser Dog appears."))}
+{bytes("LesserDogCheck", text_menu(
+  "LESSER DOG - ATK 7 DEF 0\nWields a stone dogger made of pomer-granite."
+))}
+
+{bytes_array("LesserDogPets",
+  [text_menu(x) for x in [
+  "You barely lifted your hand and Lesser Dog got excited.",
+  "You lightly touched the Dog.\nIt's already overexcited...",
+  "You pet the Dog.\nIt raises its head up to meet your hand.",
+  "You pet the Dog.\nIt was a good Dog.",
+  "You pet the Dog.\nIts excitement knows no bounds.",
+  "Critical pet!\nDog excitement increased.",
+  "You have to jump up to pet the Dog.",
+  "You don't even pet it.\nIt gets more excited.",
+  "There is no way to stop this madness.",
+  "Lesser Dog enters the realm of the clouds.",
+  "You call the Dog but it is too late.\nIt cannot hear you.",
+  "...",
+  "You can reach Lesser Dog again.",
+  "You pet Lesser Dog.",
+  "It's possible that you may have a problem.",
+  "Lesser Dog is unpettable but appreciates the attempt.",
+  "Perhaps mankind was not meant to pet this much.",
+  "It continues.",
+  "Lesser Dog is beyond your reach.",
+  "Really..."
+]])}
 
 macro menu.set_option_attributes a,b,c,d
 graphics.attribute_value_all.v=a

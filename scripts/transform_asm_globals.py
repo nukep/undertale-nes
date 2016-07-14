@@ -7,6 +7,9 @@ def bytes(label, a):
 
     return out
 
+def bytes_array(label, a):
+    return '\n'.join([bytes("{}_{}".format(label,i), b) for i,b in enumerate(a)])
+
 def text(s):
     def map_chr(c):
         if (c >= 'A' and c <= 'Z'):
@@ -41,12 +44,16 @@ def lookup_table_lo_hi(label_lo, label_hi, *longs):
 {hi}
 """.format(label_lo=label_lo, label_hi=label_hi, lo=lo, hi=hi)
 
-def text_menu(label, *s):
+def text_menu(s):
     import textwrap
     out = ""
-    for x in s:
+
+    for x in s.split('\n'):
         a = textwrap.wrap(x, 26)
         out = out + "* " + a[0] + "\n"
         for xx in a[1:]:
             out = out + "  " + xx + "\n"
-    return bytes(label, text(out.strip()))
+    out = out.strip()
+    if out.count('\n') > 3:
+        raise Exception("Text contains more than three lines: {}".format(s))
+    return text(out)
