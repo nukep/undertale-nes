@@ -55,8 +55,15 @@ print_text:
   adc #8
   sta DRAW_BUFFER_SIZE
 
-  ; Slow down the text printing to 5 characters per second
+  ; Print speed
   ldx #(60/30)
+
+  joy.is_button_down BUTTON.A
+  bne +
+  ; If the A button is held down, speed up the printing
+  ldx #1
++
+
 -
   yield_xy
   dex
