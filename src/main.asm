@@ -98,7 +98,7 @@ reset:
   jsr graphics.draw_buffer_init
   jsr graphics.oam_init
   jsr joy.init
-  jsr audio_init
+  jsr audio.init
   jsr graphics.initialize_nametable_0
 
   graphic_Options 0,25
@@ -143,6 +143,7 @@ nmi:
 
   jsr graphics.write_draw_buffer
   jsr audio.play_sq1
+  jsr audio.play_noise
 
   ;iterate_generator SFX_GENERATOR
 

@@ -67,7 +67,8 @@ TRI_VOLUME    .dsb 1    ; 0 is mute, 1+ is full volume.
 TRI_NOTE      .dsb 1
 
 NOISE_VOLUME  .dsb 1    ; 0 is mute, 15 is full volume.
-
+NOISE_SHORT   .dsb 1    ; 0 plays noise at a normal cycle, 1 shortens it drastically
+                        ; (creates robotic noises, i.e. Mettaton!)
 NOISE_PERIOD  .dsb 1    ; 0 to 15 inclusive
 
 LAST_400x     .dsb $14

@@ -1,14 +1,15 @@
+; Our audio system doesn't support hardware sweeps. They're hard and annoying.
+; Instead, channels are controlled at 1/60 second precision, frame-by-frame.
+
 ; Ranging from A0 to B7
 {lookup_table_lo_hi("NOTE_PERIODS", [
   midi_note_to_period(n) for n in range(midi_note("c0"), midi_note("b7")+1)
 ])}
 
-audio_init:
+audio.init:
   ; enable all channels
   lda #$0F
   sta $4015
-  lda #0
-  sta $4003
   rts
 
 macro audio.set_if_different n
@@ -38,6 +39,23 @@ audio.play_sq1:
   audio.set_if_different $4003
   rts
 
+audio.play_noise:
+  lda NOISE_VOLUME
+  ora #%00110000
+  sta $400C
+
+  lda NOISE_SHORT
+  beq +
+  lda #%10000000
++
+  ora NOISE_PERIOD
+  sta $400E
+
+  lda #0
+  sta $400F
+
+  rts
+
 audio.mute_all_channels:
   lda #0
   sta SQ1_VOLUME
@@ -55,6 +73,48 @@ audio.play_choose_sfx.generator:
   jsr yield
   {simple_set_sq1("b5", 2, 8)}
 
+  generator.end
+
+audio.play_alert_sfx:
+  initialize_generator SFX_GENERATOR, audio.play_alert_sfx.generator
+  rts
+
+audio.play_alert_sfx.generator:
+  {cat([
+    cat([
+      cat([simple_set_sq1(note, duty=duty), "jsr yield"])
+      for duty in [3, 2]
+    ])
+    for note in ["a#4", "e5", "c5", "f#5", "e5", "g#5"]
+  ])}
+
+  generator.end
+
+audio.play_start_battle_sfx:
+  initialize_generator SFX_GENERATOR, audio.play_start_battle_sfx.generator
+  rts
+
+audio.play_start_battle_sfx.generator:
+  {cat([
+    cat([
+      cat([simple_set_sq1(note, volume=volume, duty=3), "jsr yield"])
+      for volume in [10, 15]
+    ])
+    for note in ["g5", "d5", "a4", "e4", "b3", "f#3", "c#3", "g#2"]
+  ])}
+
+  generator.end
+
+audio.play_step_sfx:
+  initialize_generator SFX_GENERATOR, audio.play_step_sfx.generator
+  rts
+
+audio.play_step_sfx.generator:
+  {simple_set_noise(9, short=True)}
+  jsr yield
+  {simple_set_noise(9)}
+  jsr yield
+  {simple_set_noise(9)}
   generator.end
 
 audio.play_select_sfx:

@@ -74,6 +74,9 @@ def midi_note(input):
 
     return octave*12 + note + 12
 
+def cat(strings):
+    return '\n'.join(strings)
+
 def simple_set_sq1(note, duty=0x02, volume=0x0F):
     return """
 lda #{volume}
@@ -83,3 +86,13 @@ sta SQ1_NOTE
 lda #{duty}
 sta SQ1_DUTY
 """.format(note=midi_note(note), volume=volume, duty=duty)
+
+def simple_set_noise(period, volume=0x0F, short=False):
+    return """
+lda #{volume}
+sta NOISE_VOLUME
+lda #{period}
+sta NOISE_PERIOD
+lda #{short}
+sta NOISE_SHORT
+""".format(volume=volume, period=period, short=1 if short else 0)
