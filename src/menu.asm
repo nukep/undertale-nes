@@ -323,7 +323,7 @@ menu.wait_for_selection:
   jmp -
 
 menu.clear_text:
-  clear_generator TEXT_GENERATOR
+  stop_generator TEXT_GENERATOR
   ldy #0
 -
   sty graphics.clear_menu_text.y

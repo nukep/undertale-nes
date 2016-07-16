@@ -61,6 +61,78 @@ macro yield_axy
   pla ; 4
 endm
 
+macro initialize_generator info, entrypoint
+  stack=(info)+GeneratorInfo.size
+
+  lda #<(entrypoint-1)
+  sta stack
+  lda #>(entrypoint-1)
+  sta stack+1
+
+  lda #2
+  sta info+GeneratorInfo.stack_size
+endm
+
+macro stop_generator info
+  initialize_generator info, generator.nothing
+endm
+
+macro empty_current_generator_stack
+  ldx CURRENT_GENERATOR_COPY_UNTIL
+  txs
+endm
+
+macro push_current_generator
+  lda CURRENT_GENERATOR_INFO_LO
+  pha
+  lda CURRENT_GENERATOR_INFO_HI
+  pha
+  lda CURRENT_GENERATOR_STACK_LO
+  pha
+  lda CURRENT_GENERATOR_STACK_HI
+  pha
+  lda CURRENT_GENERATOR_COPY_UNTIL
+  pha
+endm
+
+macro pull_current_generator
+  pla
+  sta CURRENT_GENERATOR_COPY_UNTIL
+  pla
+  sta CURRENT_GENERATOR_STACK_HI
+  pla
+  sta CURRENT_GENERATOR_STACK_LO
+  pla
+  sta CURRENT_GENERATOR_INFO_HI
+  pla
+  sta CURRENT_GENERATOR_INFO_LO
+endm
+
+macro iterate_generator info
+  lda #<(info)
+  sta CURRENT_GENERATOR_INFO_LO
+  lda #>(info)
+  sta CURRENT_GENERATOR_INFO_HI
+  jsr iterate_current_generator
+endm
+
+macro sta_generator_field info, genvar
+  sta ((info)+GeneratorInfo.locals+(genvar)-GENVAR0)
+endm
+
+macro generator.end
+  jsr yield
+  ; The generator will just keep looping here.
+  ; A simple "rts" within a generator won't copy the stack, and resuming the
+  ; generator will always leave us after the last yield.
+  ; This is a workaround! While it works, the drawback is that we waste a yield
+  ; whenever we jsr to a generator within a generator.
+  ; TODO
+  ; The proper solution would probably be to fix the yield and
+  ; iterate_current_generator subroutines so that we just can use "rts" in the generator.
+  rts
+endm
+
 yield:
   ;; Copy local variables (2 + 10*size)
   ldy #GeneratorInfo.locals
@@ -163,64 +235,12 @@ iterate_current_generator:
 ++
   rts
 
-
-macro initialize_generator info, entrypoint
-  stack=(info)+GeneratorInfo.size
-
-  lda #<(entrypoint-1)
-  sta stack
-  lda #>(entrypoint-1)
-  sta stack+1
-
-  lda #2
-  sta info+GeneratorInfo.stack_size
-endm
-
-macro clear_generator info
-  ; Just empty the stack. This will stop the generator from iterating.
-  lda #0
-  sta info+GeneratorInfo.stack_size
-endm
-
-macro empty_current_generator_stack
-  ldx CURRENT_GENERATOR_COPY_UNTIL
-  txs
-endm
-
-macro push_current_generator
-  lda CURRENT_GENERATOR_INFO_LO
-  pha
-  lda CURRENT_GENERATOR_INFO_HI
-  pha
-  lda CURRENT_GENERATOR_STACK_LO
-  pha
-  lda CURRENT_GENERATOR_STACK_HI
-  pha
-  lda CURRENT_GENERATOR_COPY_UNTIL
-  pha
-endm
-
-macro pull_current_generator
-  pla
-  sta CURRENT_GENERATOR_COPY_UNTIL
-  pla
-  sta CURRENT_GENERATOR_STACK_HI
-  pla
-  sta CURRENT_GENERATOR_STACK_LO
-  pla
-  sta CURRENT_GENERATOR_INFO_HI
-  pla
-  sta CURRENT_GENERATOR_INFO_LO
-endm
-
-macro iterate_generator info
-  lda #<(info)
-  sta CURRENT_GENERATOR_INFO_LO
-  lda #>(info)
-  sta CURRENT_GENERATOR_INFO_HI
-  jsr iterate_current_generator
-endm
-
-macro sta_generator_field info, genvar
-  sta ((info)+GeneratorInfo.locals+(genvar)-GENVAR0)
-endm
+; Generators are never in a "do nothing" state.
+; If a generator needs to do nothing, we point them here.
+; Eg. at the end of a generator:
+; jmp generator_nothing
+generator.nothing:
+  empty_current_generator_stack
+-
+  jsr yield
+  jmp -

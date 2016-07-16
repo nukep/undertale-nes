@@ -54,8 +54,8 @@ audio.play_choose_sfx.generator:
   {simple_set_sq1("b5")}
   jsr yield
   {simple_set_sq1("b5", 2, 8)}
-  jsr yield
-  rts
+
+  generator.end
 
 audio.play_select_sfx:
   initialize_generator SFX_GENERATOR, audio.play_select_sfx.generator
@@ -75,6 +75,5 @@ audio.play_select_sfx.generator:
   {simple_set_sq1("f#6")}
   jsr yield
   {simple_set_sq1("f#6")}
-  jsr yield
 
-  rts
+  generator.end

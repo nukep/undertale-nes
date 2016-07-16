@@ -72,7 +72,8 @@ print_text:
   iny
   cpy print_text.length
   bne --
-  rts
+
+  generator.end
 
 print_text.new_line:
   iny

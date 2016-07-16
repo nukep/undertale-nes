@@ -92,7 +92,7 @@ reset:
   sta $2001  ; disable rendering
 
   initialize_generator MENU_GENERATOR, menu
-  clear_generator SFX_GENERATOR
+  stop_generator SFX_GENERATOR
   initialize_generator LESSER_DOG_GENERATOR, animate_lesser_dog
 
   jsr graphics.draw_buffer_init
