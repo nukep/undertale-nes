@@ -59,3 +59,27 @@ def text_menu(s):
     if out.count('\n') > 3:
         raise Exception("Text contains more than three lines: {}".format(s))
     return text(out)
+
+def midi_note_to_period(n):
+    # A4 = Midi note 81
+    a4 = 69
+    CPU = 1789773
+    f = 440 * 2**((n - a4) * 1/12)
+    return int(CPU / (16 * f)) - 1
+
+def midi_note(input):
+    lookup = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"]
+    octave = int(input[-1])
+    note = lookup.index(input[:-1].lower())
+
+    return octave*12 + note + 12
+
+def simple_set_sq1(note, duty=0x02, volume=0x0F):
+    return """
+lda #{volume}
+sta SQ1_VOLUME
+lda #{note}
+sta SQ1_NOTE
+lda #{duty}
+sta SQ1_DUTY
+""".format(note=midi_note(note), volume=volume, duty=duty)

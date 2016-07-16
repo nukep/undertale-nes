@@ -139,6 +139,7 @@ sta buffer+9,x
 endm
 
 macro menu.transition_to f
+  jsr audio.play_select_sfx
   jsr menu.clear_text
   lda menu.selection
   pha
@@ -162,7 +163,7 @@ menu:
   ldx TEMP0
   cpx #0
   beq +
-  initialize_generator SFX_GENERATOR, play_select_sfx
+  jsr audio.play_choose_sfx
 +
   lda menu.selection
   ; x = menu.selection*64 + 8

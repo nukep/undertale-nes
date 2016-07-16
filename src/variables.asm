@@ -39,8 +39,10 @@ OAM_SIZE              .dsb 1
 SCREEN_SPLIT_ENABLED  .dsb 1
 .ende
 
+; $0200 - $02FF: The OAM buffer
 OAM=$0200
 
+; $0300 - $03FF: The draw buffer
 DRAW_BUFFER=$0300
 
 ; State machines
@@ -50,4 +52,23 @@ TEXT_GENERATOR        .dsb GeneratorInfo.size+16
 MENU_GENERATOR        .dsb GeneratorInfo.size+16
 SFX_GENERATOR         .dsb GeneratorInfo.size+16
 LESSER_DOG_GENERATOR  .dsb GeneratorInfo.size+16
+.ende
+
+.enum $0500
+SQ1_VOLUME    .dsb 1    ; 0 is mute, 15 is full volume.
+SQ1_DUTY      .dsb 1    ; 0, 1, 2, 3
+SQ1_NOTE      .dsb 1
+
+SQ2_VOLUME    .dsb 1    ; 0 is mute, 15 is full volume.
+SQ2_DUTY      .dsb 1    ; 0, 1, 2, 3
+SQ2_NOTE      .dsb 1
+
+TRI_VOLUME    .dsb 1    ; 0 is mute, 1+ is full volume.
+TRI_NOTE      .dsb 1
+
+NOISE_VOLUME  .dsb 1    ; 0 is mute, 15 is full volume.
+
+NOISE_PERIOD  .dsb 1    ; 0 to 15 inclusive
+
+LAST_400x     .dsb $14
 .ende

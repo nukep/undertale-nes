@@ -142,6 +142,7 @@ nmi:
   sta $2001
 
   jsr graphics.write_draw_buffer
+  jsr audio.play_sq1
 
   ;iterate_generator SFX_GENERATOR
 
@@ -166,9 +167,12 @@ nmi_no_ppu_after_this_point:
   lda #1
   sta SCREEN_SPLIT_ENABLED
 
+  jsr audio.mute_all_channels
+
   iterate_generator MENU_GENERATOR
   iterate_generator TEXT_GENERATOR
   iterate_generator LESSER_DOG_GENERATOR
+  iterate_generator SFX_GENERATOR
 
   pla ; SCREEN_SPLIT_ENABLED
   bne +
