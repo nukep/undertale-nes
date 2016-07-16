@@ -31,7 +31,7 @@
 ]])}
 
 ; The index is after pet #<index>. i.e. 0 is after the first pet.
-{lookup_table_lo_hi("LesserDogPetLookup", *[
+{lookup_table_lo_hi("LesserDogPetLookup", [
   "LesserDogPet_"+str(i) for i in [
     0,1,2,3,4,5,6,7,8,9,10,11,12,
     *[13] * 6,
@@ -58,7 +58,7 @@
 ]])}
 
 ; The index is after pet #<index>. i.e. 0 is after the first pet.
-{lookup_table_lo_hi("LesserDogPetStatusLookup", *[
+{lookup_table_lo_hi("LesserDogPetStatusLookup", [
   "LesserDogPetStatus_"+str(i) for i in [
     *[0]*3,
     *[1]*4,
@@ -79,7 +79,7 @@
   "Lesser Dog is really not paying attention."
 ]])}
 
-{lookup_table_lo_hi("LesserDogNeutralLookup", *["LesserDogNeutral_"+str(i) for i in range(4)])}
+{lookup_table_lo_hi("LesserDogNeutralLookup", ["LesserDogNeutral_"+str(i) for i in range(4)])}
 
 macro menu.set_option_attributes a,b,c,d
 graphics.attribute_value_all.v=a

@@ -33,7 +33,7 @@ def text(s):
 def xy_addr(x, y, nametable=0):
     return 0x2000 + nametable*0x400 + y*32 + x
 
-def lookup_table_lo_hi(label, *longs):
+def lookup_table_lo_hi(label, longs):
     lo = '\n'.join([".db <({})".format(b) for b in longs])
     hi = '\n'.join([".db >({})".format(b) for b in longs])
 

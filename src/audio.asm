@@ -1,5 +1,5 @@
 ; Ranging from A0 to B7
-{lookup_table_lo_hi("NOTE_PERIODS", *[
+{lookup_table_lo_hi("NOTE_PERIODS", [
   midi_note_to_period(n) for n in range(midi_note("c0"), midi_note("b7")+1)
 ])}
 
