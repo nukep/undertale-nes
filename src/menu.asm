@@ -82,60 +82,60 @@
 {lookup_table_lo_hi("LesserDogNeutralLookup", ["LesserDogNeutral_"+str(i) for i in range(4)])}
 
 macro menu.set_option_attributes a,b,c,d
-graphics.attribute_value_all.v=a
-a_attr=graphics.attribute_value_all
+  graphics.attribute_value_all.v=a
+  a_attr=graphics.attribute_value_all
 
-graphics.attribute_value_all.v=b
-b_attr=graphics.attribute_value_all
+  graphics.attribute_value_all.v=b
+  b_attr=graphics.attribute_value_all
 
-graphics.attribute_value_all.v=c
-c_attr=graphics.attribute_value_all
+  graphics.attribute_value_all.v=c
+  c_attr=graphics.attribute_value_all
 
-graphics.attribute_value_all.v=d
-d_attr=graphics.attribute_value_all
+  graphics.attribute_value_all.v=d
+  d_attr=graphics.attribute_value_all
 
-graphics.attribute_addr.x=0
-graphics.attribute_addr.y=24
-ldx DRAW_BUFFER_SIZE
-txa
-clc
-adc #(3+16)
-sta DRAW_BUFFER_SIZE
+  graphics.attribute_addr.x=0
+  graphics.attribute_addr.y=24
+  ldx DRAW_BUFFER_SIZE
+  txa
+  clc
+  adc #(3+16)
+  sta DRAW_BUFFER_SIZE
 
-lda #>(graphics.attribute_addr)
-sta DRAW_BUFFER,x
-lda #<(graphics.attribute_addr)
-sta DRAW_BUFFER+1,x
-lda #16
-sta DRAW_BUFFER+2,x
+  lda #>(graphics.attribute_addr)
+  sta DRAW_BUFFER,x
+  lda #<(graphics.attribute_addr)
+  sta DRAW_BUFFER+1,x
+  lda #16
+  sta DRAW_BUFFER+2,x
 
-lda #a_attr
-buffer=DRAW_BUFFER+3
-sta buffer+0,x
-sta buffer+1,x
-sta buffer+8,x
-sta buffer+9,x
+  lda #a_attr
+  buffer=DRAW_BUFFER+3
+  sta buffer+0,x
+  sta buffer+1,x
+  sta buffer+8,x
+  sta buffer+9,x
 
-lda #b_attr
-buffer=DRAW_BUFFER+3+2
-sta buffer+0,x
-sta buffer+1,x
-sta buffer+8,x
-sta buffer+9,x
+  lda #b_attr
+  buffer=DRAW_BUFFER+3+2
+  sta buffer+0,x
+  sta buffer+1,x
+  sta buffer+8,x
+  sta buffer+9,x
 
-lda #c_attr
-buffer=DRAW_BUFFER+3+4
-sta buffer+0,x
-sta buffer+1,x
-sta buffer+8,x
-sta buffer+9,x
+  lda #c_attr
+  buffer=DRAW_BUFFER+3+4
+  sta buffer+0,x
+  sta buffer+1,x
+  sta buffer+8,x
+  sta buffer+9,x
 
-lda #d_attr
-buffer=DRAW_BUFFER+3+6
-sta buffer+0,x
-sta buffer+1,x
-sta buffer+8,x
-sta buffer+9,x
+  lda #d_attr
+  buffer=DRAW_BUFFER+3+6
+  sta buffer+0,x
+  sta buffer+1,x
+  sta buffer+8,x
+  sta buffer+9,x
 endm
 
 macro menu.transition_to f
