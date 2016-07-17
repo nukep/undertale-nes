@@ -96,3 +96,6 @@ sta NOISE_PERIOD
 lda #{short}
 sta NOISE_SHORT
 """.format(volume=volume, period=period, short=1 if short else 0)
+
+def lerp(start, end, p):
+    return (end-start)*p + start

@@ -18,6 +18,7 @@ include "graphic_Options.asm"
 {include("print-text.asm")}
 {include("animate_lesser_dog.asm")}
 {include("menu.asm")}
+{include("frisk.asm")}
 {include("battle.asm")}
 {include("nmi.asm")}
 

@@ -46,13 +46,34 @@ nmi.main:
   nmi.set_loop nmi.frisk
   rts
 
+{bytes("nmi.frisk.initial_palette", [
+  0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00,
+
+  0x0D, 0x15, 0x00, 0x00,
+  0x00, 0x07, 0x28, 0x22,
+  0x00, 0x24, 0x00, 0x00,
+  0x00, 0x0F, 0x30, 0x00
+])}
+
+nmi.frisk.transition_generator=GENERATOR0
+
 nmi.frisk:
   ; Initiailization
-  jsr audio.play_start_battle_sfx
-  nmi.set_loop nmi.battle
+  memcpy_ppu $3F00, nmi.frisk.initial_palette, nmi.frisk.initial_palette.size
+
+  initialize_generator nmi.frisk.transition_generator, frisk.battle
+  iterate_generator nmi.frisk.transition_generator
+
+  nmi.set_loop nmi.frisk.loop
   rts
 
 nmi.frisk.loop:
+  ; Scroll to the top-left
+  graphics.set_vram_and_fine_x $2000, 0
+
   ; Set $1000 Pattern Table for BG and SPR
   lda #%10011000
   sta $2000
@@ -60,6 +81,13 @@ nmi.frisk.loop:
   ; enable rendering
   lda #%00011110
   sta $2001
+
+  iterate_generator nmi.frisk.transition_generator
+  lda frisk.battle.can_start_battle
+  beq +
+  nmi.set_loop nmi.battle
++
+
   rts
 
 {bytes("nmi.battle.initial_palette", [
