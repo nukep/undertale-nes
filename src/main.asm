@@ -7,18 +7,6 @@ include "undertale_b.chr.asm"
 include "graphic_LesserDog.asm"
 include "graphic_Options.asm"
 
-{bytes("test_palette", [
-  0x00, 0x30, 0x00, 0x00,
-  0x00, 0x27, 0x30, 0x27,
-  0x00, 0x37, 0x30, 0x0D,
-  0x00, 0x00, 0x00, 0x00,
-
-  0x0D, 0x15, 0x02, 0x03,
-  0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00
-])}
-
 {include("variables.asm")}
 {include("generator.asm")}
 {include("mem.asm")}
@@ -31,6 +19,7 @@ include "graphic_Options.asm"
 {include("animate_lesser_dog.asm")}
 {include("menu.asm")}
 {include("battle.asm")}
+{include("nmi.asm")}
 
 reset:
   sei        ; ignore IRQs
@@ -87,120 +76,25 @@ reset:
   bit $2002
   bpl -
 
-  lda #0
-  sta $2000  ; disable NMI
-  sta $2001  ; disable rendering
-
-  initialize_generator MENU_GENERATOR, menu
-  stop_generator SFX_GENERATOR
-  initialize_generator LESSER_DOG_GENERATOR, animate_lesser_dog
+  ; Enable NMI
+  lda #%10000000
+  sta $2000
 
   jsr graphics.draw_buffer_init
   jsr graphics.oam_init
   jsr joy.init
   jsr audio.init
   jsr graphics.initialize_nametable_0
+  stop_generator SFX_GENERATOR
 
-  graphic_Options 0,25
-  graphic_LesserDog 13,3
+  nmi.set_loop nmi.main
 
-  jsr graphics.draw_text_box
-  jsr graphics.draw_player_stats
-
-  ; Draw Tile for sprite 0 to hit
-  graphics.set_addr_to_xy 0,15
-  lda #undertale_b.chr_27
-  sta $2007
-
-  jsr graphics.write_oam
-
-  memcpy_ppu $3F00, test_palette, test_palette.size
-
-  lda #<nmi_loop_prebattle
-  sta NMI_LOOP_LO
-  lda #>nmi_loop_prebattle
-  sta NMI_LOOP_HI
-
-  lda #%10000000
-  sta $2000
-  lda #0
-  sta $2001
-
-loop:
-  jmp loop
-
-nmi:
-  ; disable rendering (leave NMI on)
-  lda #%10000000
-  sta $2000
-  lda #0
-  sta $2001
-
-  jsr joy.read
-
-  jsr graphics.write_draw_buffer
-  jsr graphics.write_oam
-  jsr audio.play_sq1
-  jsr audio.play_noise
-  jsr audio.mute_all_channels
-
-  jmp (NMI_LOOP_LO)
-
-nmi_loop_prebattle:
-  ; Draw sprite 0 for the next frame
-  jsr graphics.draw_sprite0_hit
-  jsr graphics.hide_unwritten_oam
-
-  lda #<nmi_loop_battle
-  sta NMI_LOOP_LO
-  lda #>nmi_loop_battle
-  sta NMI_LOOP_HI
-  rti
-
-nmi_loop_battle:
-  ; Scroll to the top-left
-  graphics.set_vram_and_fine_x $2000, 0
-
-  ; Turn off NMI and set $1000 Pattern Table for BG and SPR
-  lda #%00011000
-  sta $2000
-
-  ; enable rendering
-  lda #%00011110
-  sta $2001
-
-  ; This must be the first sprite!
-  jsr graphics.draw_sprite0_hit
-
-  iterate_generator MENU_GENERATOR
-  iterate_generator TEXT_GENERATOR
-  iterate_generator LESSER_DOG_GENERATOR
-  iterate_generator SFX_GENERATOR
-
-  ; Wait until Sprite 0 Flag is cleared and also out of vblank
--
-  bit $2002
-  bvs -
-  ; out of vblank
-  ; sprite 0 flag is cleared.
-
-  ; Wait until Sprite 0 Flag is set
--
-  bit $2002
-  bvc -
-  ; sprite 0 hit
-
-  ; Turn on NMI and set $0000 Pattern Table for BG
-  lda #%10001000
-  sta $2000
-
-  jsr graphics.hide_unwritten_oam
-  ; Nothing else to do!
-
-  rti
+  ; Loop the reset thread forever.
+  ; The NMI thread will take care of things from here on.
+reset.loop:
+  jmp reset.loop
 
 irq:
-  ;inc $FE
   rti
 
 org $FFFA
