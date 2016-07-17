@@ -124,6 +124,7 @@ nmi.battle:
   sta $2007
 
   memcpy_ppu $3F00, nmi.battle.initial_palette, nmi.battle.initial_palette.size
+  iterate_generator nmi.battle.menu_generator
 
   nmi.set_loop nmi.battle.loop
   rts
