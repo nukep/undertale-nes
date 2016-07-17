@@ -1,4 +1,7 @@
 .enum $0000
+NMI_LOOP_LO  .dsb 1
+NMI_LOOP_HI  .dsb 1
+
 ; As a rule of thumb, these temporary variables cannot cross subroutine calls.
 ; They cannot be used inside macros.
 ; They can be aliased to subroutine parameters.
@@ -36,7 +39,6 @@ GENVAR5   .dsb 1
 
 DRAW_BUFFER_SIZE      .dsb 1
 OAM_SIZE              .dsb 1
-SCREEN_SPLIT_ENABLED  .dsb 1
 .ende
 
 ; $0200 - $02FF: The OAM buffer

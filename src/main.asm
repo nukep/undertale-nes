@@ -116,8 +116,10 @@ reset:
 
   memcpy_ppu $3F00, test_palette, test_palette.size
 
-  lda #0
-  sta SCREEN_SPLIT_ENABLED
+  lda #<nmi_loop_prebattle
+  sta NMI_LOOP_LO
+  lda #>nmi_loop_prebattle
+  sta NMI_LOOP_HI
 
   lda #%10000000
   sta $2000
@@ -128,25 +130,34 @@ loop:
   jmp loop
 
 nmi:
-  ; disable rendering
-  lda #0
+  ; disable rendering (leave NMI on)
+  lda #%10000000
   sta $2000
+  lda #0
   sta $2001
 
   jsr joy.read
 
-  lda DRAW_BUFFER_SIZE
-  jsr print_debug_byte
-  lda #0
-  sta $2000
-  sta $2001
-
   jsr graphics.write_draw_buffer
+  jsr graphics.write_oam
   jsr audio.play_sq1
   jsr audio.play_noise
+  jsr audio.mute_all_channels
 
-  ;iterate_generator SFX_GENERATOR
+  jmp (NMI_LOOP_LO)
 
+nmi_loop_prebattle:
+  ; Draw sprite 0 for the next frame
+  jsr graphics.draw_sprite0_hit
+  jsr graphics.hide_unwritten_oam
+
+  lda #<nmi_loop_battle
+  sta NMI_LOOP_LO
+  lda #>nmi_loop_battle
+  sta NMI_LOOP_HI
+  rti
+
+nmi_loop_battle:
   ; Scroll to the top-left
   graphics.set_vram_and_fine_x $2000, 0
 
@@ -158,30 +169,13 @@ nmi:
   lda #%00011110
   sta $2001
 
-  jsr graphics.write_oam
-nmi_no_ppu_after_this_point:
-  lda SCREEN_SPLIT_ENABLED
-  pha
-
   ; This must be the first sprite!
   jsr graphics.draw_sprite0_hit
-  lda #1
-  sta SCREEN_SPLIT_ENABLED
-
-  jsr audio.mute_all_channels
 
   iterate_generator MENU_GENERATOR
   iterate_generator TEXT_GENERATOR
   iterate_generator LESSER_DOG_GENERATOR
   iterate_generator SFX_GENERATOR
-
-  pla ; SCREEN_SPLIT_ENABLED
-  bne +
-  jsr graphics.hide_unwritten_oam
-  lda #%10011000
-  sta $2000
-  rti
-+
 
   ; Wait until Sprite 0 Flag is cleared and also out of vblank
 -
