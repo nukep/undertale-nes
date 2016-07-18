@@ -122,18 +122,15 @@ audio.play_select_sfx:
   rts
 
 audio.play_select_sfx.generator:
-  {simple_set_sq1("g#5")}
-  jsr yield
-  {simple_set_sq1("g#5")}
-  jsr yield
-
-  {simple_set_sq1("c#6")}
-  jsr yield
-  {simple_set_sq1("c#6")}
-  jsr yield
-
-  {simple_set_sq1("f#6")}
-  jsr yield
-  {simple_set_sq1("f#6")}
+  {cat([
+    cat([
+      cat([simple_set_sq1(note, volume=volume, duty=2), "jsr yield"]*2)
+    ])
+    for note,volume in [
+      ("g#5", 15), ("c#6", 15), ("f#6", 15),
+      ("c#6", 4), ("f#6", 4),
+      ("c#6", 2), ("f#6", 2)
+    ]
+  ])}
 
   generator.end
