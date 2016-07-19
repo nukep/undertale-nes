@@ -75,3 +75,8 @@ NOISE_PERIOD  .dsb 1    ; 0 to 15 inclusive
 
 LAST_400x     .dsb $14
 .ende
+
+.enum $0600
+RAND_H        .dsb 1
+RAND_L        .dsb 1
+.ende

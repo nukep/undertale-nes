@@ -8,6 +8,7 @@ include "graphic_LesserDog.asm"
 include "graphic_Options.asm"
 
 {include("variables.asm")}
+{include("random.asm")}
 {include("generator.asm")}
 {include("mem.asm")}
 {include("extended-instructions.asm")}
