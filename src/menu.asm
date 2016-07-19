@@ -183,6 +183,7 @@ menu:
   lda menu.selection
   cmp #1
   bne +
+  jsr audio.stop_text_sfx
   menu.transition_to menu.act
   jmp --
 +

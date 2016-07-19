@@ -5,6 +5,7 @@ print_text.src_hi=GENVAR3
 print_text.length=GENVAR4
 print_text.x_beginning=GENVAR5
 print_text:
+  jsr audio.play_text_sfx
   lda print_text.x
   sta print_text.x_beginning
   ldy #0
@@ -73,6 +74,7 @@ print_text:
   cpy print_text.length
   bne --
 
+  jsr audio.stop_text_sfx
   generator.end
 
 print_text.new_line:

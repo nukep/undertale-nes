@@ -134,3 +134,41 @@ audio.play_select_sfx.generator:
   ])}
 
   generator.end
+
+audio.play_text_sfx:
+  initialize_generator TEXT_SFX_GENERATOR, audio.play_text_sfx.generator
+  rts
+
+audio.stop_text_sfx:
+  stop_generator TEXT_SFX_GENERATOR
+  rts
+
+audio.play_text_sfx.generator:
+--
+  initialize_generator SFX_GENERATOR, audio.play_text_sfx_sfx.generator
+
+  ; Get a random number between 2 and 6
+  jsr random[\x\y]
+  and #$03
+  clc
+  adc #2
+
+  tay
+-
+  phy
+  jsr yield
+  ply
+  dey
+  bne -
+  jmp --
+
+audio.play_text_sfx_sfx.generator:
+  {cat([
+    cat([simple_set_noise(period, volume, short), "jsr yield"])
+    for period,volume,short in zip(
+      [9,3,3,3],
+      [7,4,2,0],
+      [True,False,False,False]
+    )
+  ])}
+  generator.end

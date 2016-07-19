@@ -34,6 +34,7 @@ nmi:
   jsr @call_nmi_loop
 
   ; Perform any processing before vblank so that we don't do it there
+  iterate_generator TEXT_SFX_GENERATOR
   iterate_generator SFX_GENERATOR
   inc $FF
   jsr graphics.hide_unwritten_oam

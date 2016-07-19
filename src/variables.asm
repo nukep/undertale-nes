@@ -51,6 +51,7 @@ DRAW_BUFFER=$0300
 .enum $0400
 ; Each structure is the size of GeneratorInfo.size, plus additional stack space
 TEXT_GENERATOR        .dsb GeneratorInfo.size+16
+TEXT_SFX_GENERATOR    .dsb GeneratorInfo.size+16
 SFX_GENERATOR         .dsb GeneratorInfo.size+16
 GENERATOR0            .dsb GeneratorInfo.size+16
 GENERATOR1            .dsb GeneratorInfo.size+16
