@@ -116,24 +116,29 @@ frisk.draw:
   ldx OAM_SIZE
   txa
   clc
-  adc #(12*4)
+  adc #(14*4)
   sta OAM_SIZE
 
-  frisk.draw.tile 0, 0, 0, undertale_b.chr_09, 1
-  frisk.draw.tile 1, 8, 0, undertale_b.chr_0a, 1
-  frisk.draw.tile 2, 16, 0, undertale_b.chr_0b, 1
+  ; Shirt stripes
+  frisk.draw.tile 0, 7, 16, undertale_b.chr_0c, 2
+  frisk.draw.tile 1, 9, 16, undertale_b.chr_0c, 2
 
-  frisk.draw.tile 3, 0, 8, undertale_b.chr_19, 1
-  frisk.draw.tile 4, 8, 8, undertale_b.chr_1a, 1
-  frisk.draw.tile 5, 16, 8, undertale_b.chr_1b, 1
+  ; Frisk
+  frisk.draw.tile 2, 0, 0, undertale_b.chr_09, 1
+  frisk.draw.tile 3, 8, 0, undertale_b.chr_0a, 1
+  frisk.draw.tile 4, 16, 0, undertale_b.chr_0b, 1
 
-  frisk.draw.tile 6, 0, 16, undertale_b.chr_29, 1
-  frisk.draw.tile 7, 8, 16, undertale_b.chr_2a, 1
-  frisk.draw.tile 8, 16, 16, undertale_b.chr_2b, 1
+  frisk.draw.tile 5, 0, 8, undertale_b.chr_19, 1
+  frisk.draw.tile 6, 8, 8, undertale_b.chr_1a, 1
+  frisk.draw.tile 7, 16, 8, undertale_b.chr_1b, 1
 
-  frisk.draw.tile 9, 0, 24, undertale_b.chr_39, 1
-  frisk.draw.tile 10, 8, 24, undertale_b.chr_3a, 1
-  frisk.draw.tile 11, 16, 24, undertale_b.chr_3b, 1
+  frisk.draw.tile 8, 0, 16, undertale_b.chr_29, 1
+  frisk.draw.tile 9, 8, 16, undertale_b.chr_2a, 1
+  frisk.draw.tile 10, 16, 16, undertale_b.chr_2b, 1
+
+  frisk.draw.tile 11, 0, 24, undertale_b.chr_39, 1
+  frisk.draw.tile 12, 8, 24, undertale_b.chr_3a, 1
+  frisk.draw.tile 13, 16, 24, undertale_b.chr_3b, 1
   rts
 
 frisk.draw.alert:
