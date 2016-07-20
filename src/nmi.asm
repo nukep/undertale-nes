@@ -105,6 +105,7 @@ nmi.frisk.loop:
 
 nmi.battle.menu_generator=GENERATOR0
 nmi.battle.lesser_dog_generator=GENERATOR1
+nmi.battle.lesser_dog_head_generator=GENERATOR2
 
 nmi.battle:
   ; Draw sprite 0 for the next frame
@@ -112,6 +113,7 @@ nmi.battle:
 
   initialize_generator nmi.battle.menu_generator, menu
   initialize_generator nmi.battle.lesser_dog_generator, animate_lesser_dog
+  initialize_generator nmi.battle.lesser_dog_head_generator, lesser_dog.head
 
   graphic_Options 0,25
   graphic_LesserDog 13,3
@@ -126,6 +128,7 @@ nmi.battle:
 
   memcpy_ppu $3F00, nmi.battle.initial_palette, nmi.battle.initial_palette.size
   iterate_generator nmi.battle.menu_generator
+  iterate_generator nmi.battle.lesser_dog_head_generator
 
   nmi.set_loop nmi.battle.loop
   rts
@@ -148,6 +151,12 @@ nmi.battle.loop:
   iterate_generator nmi.battle.menu_generator
   iterate_generator TEXT_GENERATOR
   iterate_generator nmi.battle.lesser_dog_generator
+  joy.is_button_tapped BUTTON.START
+  bne +
+  lda #1
+  sta_generator_field nmi.battle.lesser_dog_head_generator, lesser_dog.head.grow
++
+  iterate_generator nmi.battle.lesser_dog_head_generator
 
   ; Wait until Sprite 0 Flag is cleared and also out of vblank
 -
