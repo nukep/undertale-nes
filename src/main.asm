@@ -14,6 +14,7 @@ include "graphic_Options.asm"
 {include("extended-instructions.asm")}
 {include("joy.asm")}
 {include("audio.asm")}
+{include("sfx.asm")}
 {include("graphics.asm")}
 {include("text.asm")}
 {include("print-text.asm")}
