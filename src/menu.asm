@@ -198,7 +198,7 @@ menu.act:
   lda #0
   sta menu.selection
 -
-  write_text_simple MENU_LESSER_DOG, MENU_LESSER_DOG.size, 4, 17
+  draw_text.simple MENU_LESSER_DOG, MENU_LESSER_DOG.size, 4, 17
   lda #1
   sta menu.wait_for_selection.total_selections
   jsr menu.wait_for_selection
@@ -213,14 +213,14 @@ menu.act:
 menu.lesser_dog_act:
   lda #0
   sta menu.selection
-  write_text_simple MENU_CHECK, MENU_CHECK.size, 4, 17
-  write_text_simple MENU_PET, MENU_PET.size, 18, 17
+  draw_text.simple MENU_CHECK, MENU_CHECK.size, 4, 17
+  draw_text.simple MENU_PET, MENU_PET.size, 18, 17
   jsr yield
-  write_text_simple MENU_PET, MENU_PET.size, 4, 19
-  write_text_simple MENU_PET, MENU_PET.size, 18, 19
+  draw_text.simple MENU_PET, MENU_PET.size, 4, 19
+  draw_text.simple MENU_PET, MENU_PET.size, 18, 19
   jsr yield
-  write_text_simple MENU_PET, MENU_PET.size, 4, 21
-  write_text_simple MENU_PET, MENU_PET.size, 18, 21
+  draw_text.simple MENU_PET, MENU_PET.size, 4, 21
+  draw_text.simple MENU_PET, MENU_PET.size, 18, 21
   lda #6
   sta menu.wait_for_selection.total_selections
   jsr menu.wait_for_selection

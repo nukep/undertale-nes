@@ -1,25 +1,25 @@
-macro write_text_simple src, length, x, y
+macro draw_text.simple src, length, x, y
   graphics.xy_to_addr.x = x
   graphics.xy_to_addr.y = y
   lda #<src
-  sta write_text.src_lo
+  sta draw_text.draw.src_lo
   lda #>src
-  sta write_text.src_hi
+  sta draw_text.draw.src_hi
   lda #<(graphics.xy_to_addr)
-  sta write_text.dest_lo
+  sta draw_text.draw.dest_lo
   lda #>(graphics.xy_to_addr)
-  sta write_text.dest_hi
+  sta draw_text.draw.dest_hi
   lda #length
-  sta write_text.src_length
-  jsr write_text
+  sta draw_text.draw.src_length
+  jsr draw_text.draw
 endm
 
-macro write_text.from lookup
-  lda write_text.src_length
+macro draw_text.draw._from lookup
+  lda draw_text.draw.src_length
   sta TEMP5
   ldy #0
 -
-  lda (write_text.src_lo), y
+  lda (draw_text.draw.src_lo), y
   sty TEMP6
   tay
   lda lookup,y
@@ -31,44 +31,44 @@ macro write_text.from lookup
   bne -
 endm
 
-write_text.src_lo=TEMP0
-write_text.src_hi=TEMP1
-write_text.dest_lo=TEMP2
-write_text.dest_hi=TEMP3
-write_text.src_length=TEMP4
-write_text:
+draw_text.draw.src_lo=TEMP0
+draw_text.draw.src_hi=TEMP1
+draw_text.draw.dest_lo=TEMP2
+draw_text.draw.dest_hi=TEMP3
+draw_text.draw.src_length=TEMP4
+draw_text.draw:
   ldx DRAW_BUFFER_SIZE
-  lda write_text.src_length
+  lda draw_text.draw.src_length
   clc
   adc #3
   asl
   adc DRAW_BUFFER_SIZE
   sta DRAW_BUFFER_SIZE
 
-  lda write_text.dest_hi
+  lda draw_text.draw.dest_hi
   sta DRAW_BUFFER,x
-  lda write_text.dest_lo
+  lda draw_text.draw.dest_lo
   sta DRAW_BUFFER+1,x
-  lda write_text.src_length
+  lda draw_text.draw.src_length
   sta DRAW_BUFFER+2,x
   inx
   inx
   inx
-  write_text.from TEXT_LOOKUP_TOP
+  draw_text.draw._from TEXT_LOOKUP_TOP
 
-  lda write_text.dest_lo
+  lda draw_text.draw.dest_lo
   clc
   adc #32
   sta DRAW_BUFFER+1,x
-  lda write_text.dest_hi
+  lda draw_text.draw.dest_hi
   adc #0
   sta DRAW_BUFFER,x
-  lda write_text.src_length
+  lda draw_text.draw.src_length
   sta DRAW_BUFFER+2,x
   inx
   inx
   inx
-  write_text.from TEXT_LOOKUP_BOTTOM
+  draw_text.draw._from TEXT_LOOKUP_BOTTOM
   rts
 
 ; Used for printing hexadecimal numbers
