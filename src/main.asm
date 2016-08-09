@@ -19,7 +19,7 @@ include "graphic_Options.asm"
 {include("draw_buffer.asm")}
 {include("oam.asm")}
 {include("text.asm")}
-{include("print-text.asm")}
+{include("type_text.asm")}
 {include("animate_lesser_dog.asm")}
 {include("menu.asm")}
 {include("frisk.asm")}

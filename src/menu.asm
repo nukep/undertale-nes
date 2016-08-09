@@ -155,7 +155,7 @@ menu:
   lda #0
   sta menu.selection
 --
-  initialize_text_generator LesserDogAppears, LesserDogAppears.size
+  type_text.initialize_generator TEXT_GENERATOR, LesserDogAppears, LesserDogAppears.size
 -
   jsr menu.check_buttons
   stx TEMP0
@@ -243,16 +243,16 @@ menu.lesser_dog_act:
 
 menu.lesser_dog_act_check:
   lda #<(LesserDogCheck)
-  sta print_text.src_lo
+  sta type_text.src_lo
   lda #>(LesserDogCheck)
-  sta print_text.src_hi
+  sta type_text.src_hi
   lda #(LesserDogCheck.size)
-  sta print_text.length
+  sta type_text.length
   lda #2
-  sta print_text.x
+  sta type_text.x
   lda #17
-  sta print_text.y
-  jsr print_text
+  sta type_text.y
+  jsr type_text.generator
 -
   joy.is_button_tapped BUTTON.A
   bne +
@@ -263,16 +263,16 @@ menu.lesser_dog_act_check:
 
 menu.lesser_dog_act_pet:
   lda #<(LesserDogPet_0)
-  sta print_text.src_lo
+  sta type_text.src_lo
   lda #>(LesserDogPet_0)
-  sta print_text.src_hi
+  sta type_text.src_hi
   lda #(LesserDogPet_0.size)
-  sta print_text.length
+  sta type_text.length
   lda #2
-  sta print_text.x
+  sta type_text.x
   lda #17
-  sta print_text.y
-  jsr print_text
+  sta type_text.y
+  jsr type_text.generator
 -
   joy.is_button_tapped BUTTON.A
   bne +

@@ -1,13 +1,13 @@
-print_text.x=GENVAR0
-print_text.y=GENVAR1
-print_text.src_lo=GENVAR2
-print_text.src_hi=GENVAR3
-print_text.length=GENVAR4
-print_text.x_beginning=GENVAR5
-print_text:
+type_text.x=GENVAR0
+type_text.y=GENVAR1
+type_text.src_lo=GENVAR2
+type_text.src_hi=GENVAR3
+type_text.length=GENVAR4
+type_text.x_beginning=GENVAR5
+type_text.generator:
   jsr audio.play_text_sfx
-  lda print_text.x
-  sta print_text.x_beginning
+  lda type_text.x
+  sta type_text.x_beginning
   ldy #0
 --
   ; We're about to draw 2 tiles. Ready? Here we go!
@@ -15,14 +15,14 @@ print_text:
 
   ; PPU_ADDR_HI = 0x20 + y>>3
   ; PPU_ADDR_LO = x + y<<5
-  lda print_text.y
+  lda type_text.y
   lsr_n 3
   ora #$20
   sta TEMP0
-  lda print_text.y
+  lda type_text.y
   asl_n 5
   clc
-  adc print_text.x
+  adc type_text.x
   sta DRAW_BUFFER+1,x
   ; The bottom half is on y + 1
   clc
@@ -39,9 +39,9 @@ print_text:
   sta DRAW_BUFFER+6,x
 
   ; Print two characters. We're using a double-height font.
-  lda (print_text.src_lo), y
+  lda (type_text.src_lo), y
   cmp #$FF
-  beq print_text.new_line
+  beq type_text._new_line
   sty TEMP0
   tay
   lda TEXT_LOOKUP_TOP, y
@@ -49,7 +49,7 @@ print_text:
   lda TEXT_LOOKUP_BOTTOM, y
   sta DRAW_BUFFER+7,x
   ldy TEMP0
-  inc print_text.x
+  inc type_text.x
 
   txa
   clc
@@ -71,32 +71,32 @@ print_text:
   bne -
 
   iny
-  cpy print_text.length
+  cpy type_text.length
   bne --
 
   jsr audio.stop_text_sfx
   generator.end
 
-print_text.new_line:
+type_text._new_line:
   iny
-  lda print_text.x_beginning
-  sta print_text.x
-  inc print_text.y
-  inc print_text.y
+  lda type_text.x_beginning
+  sta type_text.x
+  inc type_text.y
+  inc type_text.y
   jmp --
 
-macro initialize_text_generator src,length
+macro type_text.initialize_generator GENERATOR,src,length
   lda #<(src)
-  generator.sta_field TEXT_GENERATOR, print_text.src_lo
+  generator.sta_field GENERATOR, type_text.src_lo
   lda #>(src)
-  generator.sta_field TEXT_GENERATOR, print_text.src_hi
+  generator.sta_field GENERATOR, type_text.src_hi
   lda #(length)
-  generator.sta_field TEXT_GENERATOR, print_text.length
+  generator.sta_field GENERATOR, type_text.length
   lda #2
-  generator.sta_field TEXT_GENERATOR, print_text.x
+  generator.sta_field GENERATOR, type_text.x
   lda #17
-  generator.sta_field TEXT_GENERATOR, print_text.y
-  generator.initialize TEXT_GENERATOR, print_text
+  generator.sta_field GENERATOR, type_text.y
+  generator.initialize GENERATOR, type_text.generator
 endm
 
 print_debug_byte:
