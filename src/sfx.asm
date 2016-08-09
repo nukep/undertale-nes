@@ -1,6 +1,6 @@
 
 audio.play_choose_sfx:
-  initialize_generator SFX_GENERATOR, audio.play_choose_sfx.generator
+  generator.initialize SFX_GENERATOR, audio.play_choose_sfx.generator
   rts
 
 audio.play_choose_sfx.generator:
@@ -11,7 +11,7 @@ audio.play_choose_sfx.generator:
   generator.end
 
 audio.play_alert_sfx:
-  initialize_generator SFX_GENERATOR, audio.play_alert_sfx.generator
+  generator.initialize SFX_GENERATOR, audio.play_alert_sfx.generator
   rts
 
 audio.play_alert_sfx.generator:
@@ -26,7 +26,7 @@ audio.play_alert_sfx.generator:
   generator.end
 
 audio.play_start_battle_sfx:
-  initialize_generator SFX_GENERATOR, audio.play_start_battle_sfx.generator
+  generator.initialize SFX_GENERATOR, audio.play_start_battle_sfx.generator
   rts
 
 audio.play_start_battle_sfx.generator:
@@ -41,7 +41,7 @@ audio.play_start_battle_sfx.generator:
   generator.end
 
 audio.play_step_sfx:
-  initialize_generator SFX_GENERATOR, audio.play_step_sfx.generator
+  generator.initialize SFX_GENERATOR, audio.play_step_sfx.generator
   rts
 
 audio.play_step_sfx.generator:
@@ -53,7 +53,7 @@ audio.play_step_sfx.generator:
   generator.end
 
 audio.play_select_sfx:
-  initialize_generator SFX_GENERATOR, audio.play_select_sfx.generator
+  generator.initialize SFX_GENERATOR, audio.play_select_sfx.generator
   rts
 
 audio.play_select_sfx.generator:
@@ -71,16 +71,16 @@ audio.play_select_sfx.generator:
   generator.end
 
 audio.play_text_sfx:
-  initialize_generator TEXT_SFX_GENERATOR, audio.play_text_sfx.generator
+  generator.initialize TEXT_SFX_GENERATOR, audio.play_text_sfx.generator
   rts
 
 audio.stop_text_sfx:
-  stop_generator TEXT_SFX_GENERATOR
+  generator.stop TEXT_SFX_GENERATOR
   rts
 
 audio.play_text_sfx.generator:
 --
-  initialize_generator SFX_GENERATOR, audio.play_text_sfx_sfx.generator
+  generator.initialize SFX_GENERATOR, audio.play_text_sfx_sfx.generator
 
   ; Get a random number between 2 and 6
   jsr random[\x\y]

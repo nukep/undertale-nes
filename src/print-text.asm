@@ -87,16 +87,16 @@ print_text.new_line:
 
 macro initialize_text_generator src,length
   lda #<(src)
-  sta_generator_field TEXT_GENERATOR, print_text.src_lo
+  generator.sta_field TEXT_GENERATOR, print_text.src_lo
   lda #>(src)
-  sta_generator_field TEXT_GENERATOR, print_text.src_hi
+  generator.sta_field TEXT_GENERATOR, print_text.src_hi
   lda #(length)
-  sta_generator_field TEXT_GENERATOR, print_text.length
+  generator.sta_field TEXT_GENERATOR, print_text.length
   lda #2
-  sta_generator_field TEXT_GENERATOR, print_text.x
+  generator.sta_field TEXT_GENERATOR, print_text.x
   lda #17
-  sta_generator_field TEXT_GENERATOR, print_text.y
-  initialize_generator TEXT_GENERATOR, print_text
+  generator.sta_field TEXT_GENERATOR, print_text.y
+  generator.initialize TEXT_GENERATOR, print_text
 endm
 
 print_debug_byte:

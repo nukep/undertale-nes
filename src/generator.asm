@@ -61,7 +61,7 @@ macro yield_axy
   pla ; 4
 endm
 
-macro initialize_generator info, entrypoint
+macro generator.initialize info, entrypoint
   stack=(info)+GeneratorInfo.size
 
   lda #<(entrypoint-1)
@@ -73,16 +73,16 @@ macro initialize_generator info, entrypoint
   sta info+GeneratorInfo.stack_size
 endm
 
-macro stop_generator info
-  initialize_generator info, generator.nothing
+macro generator.stop info
+  generator.initialize info, generator.nothing
 endm
 
-macro empty_current_generator_stack
+macro generator.empty_current_stack
   ldx CURRENT_GENERATOR_COPY_UNTIL
   txs
 endm
 
-macro push_current_generator
+macro generator.push_current
   lda CURRENT_GENERATOR_INFO_LO
   pha
   lda CURRENT_GENERATOR_INFO_HI
@@ -95,7 +95,7 @@ macro push_current_generator
   pha
 endm
 
-macro pull_current_generator
+macro generator.pull_current
   pla
   sta CURRENT_GENERATOR_COPY_UNTIL
   pla
@@ -108,15 +108,15 @@ macro pull_current_generator
   sta CURRENT_GENERATOR_INFO_LO
 endm
 
-macro iterate_generator info
+macro generator.iterate info
   lda #<(info)
   sta CURRENT_GENERATOR_INFO_LO
   lda #>(info)
   sta CURRENT_GENERATOR_INFO_HI
-  jsr iterate_current_generator
+  jsr generator.iterate_current
 endm
 
-macro sta_generator_field info, genvar
+macro generator.sta_field info, genvar
   sta ((info)+GeneratorInfo.locals+(genvar)-GENVAR0)
 endm
 
@@ -129,7 +129,7 @@ macro generator.end
   ; whenever we jsr to a generator within a generator.
   ; TODO
   ; The proper solution would probably be to fix the yield and
-  ; iterate_current_generator subroutines so that we just can use "rts" in the generator.
+  ; generator.iterate_current subroutines so that we just can use "rts" in the generator.
   rts
 endm
 
@@ -163,10 +163,10 @@ yield:
   tya
   ldy #GeneratorInfo.stack_size
   sta (CURRENT_GENERATOR_INFO_LO), y
-  ; Jump to where the iterate_current_generator subroutine wants to return
+  ; Jump to where the generator.iterate_current subroutine wants to return
   rts
 
-copy_sm_to_current_generator_locals[\x]:
+generator.copy_sm_to_current_locals[\x]:
   ldy #GeneratorInfo.locals
   i=0
   rept GeneratorInfo.locals.size
@@ -177,7 +177,7 @@ copy_sm_to_current_generator_locals[\x]:
   endr
   rts
 
-copy_current_generator_locals_to_sm[\x]:
+generator.copy_current_locals_to_sm[\x]:
   ldy #GeneratorInfo.locals
   i=0
   rept GeneratorInfo.locals.size
@@ -188,7 +188,7 @@ copy_current_generator_locals_to_sm[\x]:
   endr
   rts
 
-iterate_current_generator:
+generator.iterate_current:
   tsx
   stx CURRENT_GENERATOR_COPY_UNTIL
 
@@ -240,7 +240,7 @@ iterate_current_generator:
 ; Eg. at the end of a generator:
 ; jmp generator_nothing
 generator.nothing:
-  empty_current_generator_stack
+  generator.empty_current_stack
 -
   jsr yield
   jmp -

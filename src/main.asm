@@ -90,8 +90,8 @@ reset:
   jsr joy.init
   jsr audio.init
   jsr graphics.initialize_nametable_0
-  stop_generator TEXT_SFX_GENERATOR
-  stop_generator SFX_GENERATOR
+  generator.stop TEXT_SFX_GENERATOR
+  generator.stop SFX_GENERATOR
 
   nmi.set_loop nmi.main
 

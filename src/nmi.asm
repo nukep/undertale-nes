@@ -34,8 +34,8 @@ nmi:
   jsr @call_nmi_loop
 
   ; Perform any processing before vblank so that we don't do it there
-  iterate_generator TEXT_SFX_GENERATOR
-  iterate_generator SFX_GENERATOR
+  generator.iterate TEXT_SFX_GENERATOR
+  generator.iterate SFX_GENERATOR
   inc $FF
   jsr oam.hide_unwritten_oam
   rti
@@ -65,8 +65,8 @@ nmi.frisk:
   ; Initiailization
   memcpy_ppu $3F00, nmi.frisk.initial_palette, nmi.frisk.initial_palette.size
 
-  initialize_generator nmi.frisk.transition_generator, frisk.battle
-  iterate_generator nmi.frisk.transition_generator
+  generator.initialize nmi.frisk.transition_generator, frisk.battle
+  generator.iterate nmi.frisk.transition_generator
 
   nmi.set_loop nmi.frisk.loop
   rts
@@ -83,7 +83,7 @@ nmi.frisk.loop:
   lda #%00011110
   sta $2001
 
-  iterate_generator nmi.frisk.transition_generator
+  generator.iterate nmi.frisk.transition_generator
   lda frisk.battle.can_start_battle
   beq +
   nmi.set_loop nmi.battle
@@ -111,9 +111,9 @@ nmi.battle:
   ; Draw sprite 0 for the next frame
   jsr graphics.draw_sprite0_hit
 
-  initialize_generator nmi.battle.menu_generator, menu
-  initialize_generator nmi.battle.lesser_dog_generator, animate_lesser_dog
-  initialize_generator nmi.battle.lesser_dog_head_generator, lesser_dog.head
+  generator.initialize nmi.battle.menu_generator, menu
+  generator.initialize nmi.battle.lesser_dog_generator, animate_lesser_dog
+  generator.initialize nmi.battle.lesser_dog_head_generator, lesser_dog.head
 
   graphic_Options 0,25
   graphic_LesserDog 13,3
@@ -127,8 +127,8 @@ nmi.battle:
   sta $2007
 
   memcpy_ppu $3F00, nmi.battle.initial_palette, nmi.battle.initial_palette.size
-  iterate_generator nmi.battle.menu_generator
-  iterate_generator nmi.battle.lesser_dog_head_generator
+  generator.iterate nmi.battle.menu_generator
+  generator.iterate nmi.battle.lesser_dog_head_generator
 
   nmi.set_loop nmi.battle.loop
   rts
@@ -148,15 +148,15 @@ nmi.battle.loop:
   ; This must be the first sprite!
   jsr graphics.draw_sprite0_hit
 
-  iterate_generator nmi.battle.menu_generator
-  iterate_generator TEXT_GENERATOR
-  iterate_generator nmi.battle.lesser_dog_generator
+  generator.iterate nmi.battle.menu_generator
+  generator.iterate TEXT_GENERATOR
+  generator.iterate nmi.battle.lesser_dog_generator
   joy.is_button_tapped BUTTON.START
   bne +
   lda #1
-  sta_generator_field nmi.battle.lesser_dog_head_generator, lesser_dog.head.grow
+  generator.sta_field nmi.battle.lesser_dog_head_generator, lesser_dog.head.grow
 +
-  iterate_generator nmi.battle.lesser_dog_head_generator
+  generator.iterate nmi.battle.lesser_dog_head_generator
 
   ; Wait until Sprite 0 Flag is cleared and also out of vblank
 -

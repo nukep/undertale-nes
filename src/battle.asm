@@ -7,5 +7,5 @@ lesser_dog_battle:
   dex
   bne -
 
-  empty_current_generator_stack
+  generator.empty_current_stack
   jmp menu

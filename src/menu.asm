@@ -238,7 +238,7 @@ menu.lesser_dog_act:
 ++
   jsr menu.clear_text
   ; Forget the state of the menu and jump right for the battle!
-  empty_current_generator_stack
+  generator.empty_current_stack
   jmp lesser_dog_battle
 
 menu.lesser_dog_act_check:
@@ -324,7 +324,7 @@ menu.wait_for_selection:
   jmp -
 
 menu.clear_text:
-  stop_generator TEXT_GENERATOR
+  generator.stop TEXT_GENERATOR
   ldy #0
 -
   sty graphics.clear_menu_text.y
