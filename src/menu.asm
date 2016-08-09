@@ -139,7 +139,7 @@ macro menu.set_option_attributes a,b,c,d
 endm
 
 macro menu.transition_to f
-  jsr audio.play_select_sfx
+  jsr sfx.select
   jsr menu.clear_text
   lda menu.selection
   pha
@@ -163,7 +163,7 @@ menu:
   ldx TEMP0
   cpx #0
   beq +
-  jsr audio.play_choose_sfx
+  jsr sfx.choose
 +
   lda menu.selection
   ; x = menu.selection*64 + 8
@@ -183,7 +183,7 @@ menu:
   lda menu.selection
   cmp #1
   bne +
-  jsr audio.stop_text_sfx
+  jsr sfx.stop_text
   menu.transition_to menu.act
   jmp --
 +

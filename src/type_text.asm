@@ -5,7 +5,7 @@ type_text.src_hi=GENVAR3
 type_text.length=GENVAR4
 type_text.x_beginning=GENVAR5
 type_text.generator:
-  jsr audio.play_text_sfx
+  jsr sfx.text
   lda type_text.x
   sta type_text.x_beginning
   ldy #0
@@ -74,7 +74,7 @@ type_text.generator:
   cpy type_text.length
   bne --
 
-  jsr audio.stop_text_sfx
+  jsr sfx.stop_text
   generator.end
 
 type_text._new_line:

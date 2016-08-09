@@ -1,20 +1,19 @@
-
-audio.play_choose_sfx:
-  generator.initialize SFX_GENERATOR, audio.play_choose_sfx.generator
+sfx.choose:
+  generator.initialize SFX_GENERATOR, sfx.choose.generator
   rts
 
-audio.play_choose_sfx.generator:
+sfx.choose.generator:
   {simple_set_sq1("b5")}
   jsr yield
   {simple_set_sq1("b5", 2, 8)}
 
   generator.end
 
-audio.play_alert_sfx:
-  generator.initialize SFX_GENERATOR, audio.play_alert_sfx.generator
+sfx.alert:
+  generator.initialize SFX_GENERATOR, sfx.alert.generator
   rts
 
-audio.play_alert_sfx.generator:
+sfx.alert.generator:
   {cat([
     cat([
       cat([simple_set_sq1(note, duty=duty), "jsr yield"])
@@ -25,11 +24,11 @@ audio.play_alert_sfx.generator:
 
   generator.end
 
-audio.play_start_battle_sfx:
-  generator.initialize SFX_GENERATOR, audio.play_start_battle_sfx.generator
+sfx.start_battle:
+  generator.initialize SFX_GENERATOR, sfx.start_battle.generator
   rts
 
-audio.play_start_battle_sfx.generator:
+sfx.start_battle.generator:
   {cat([
     cat([
       cat([simple_set_sq1(note, volume=volume, duty=3), "jsr yield"])
@@ -40,11 +39,11 @@ audio.play_start_battle_sfx.generator:
 
   generator.end
 
-audio.play_step_sfx:
-  generator.initialize SFX_GENERATOR, audio.play_step_sfx.generator
+sfx.step:
+  generator.initialize SFX_GENERATOR, sfx.step.generator
   rts
 
-audio.play_step_sfx.generator:
+sfx.step.generator:
   {simple_set_noise(9, short=True)}
   jsr yield
   {simple_set_noise(9)}
@@ -52,11 +51,11 @@ audio.play_step_sfx.generator:
   {simple_set_noise(9)}
   generator.end
 
-audio.play_select_sfx:
-  generator.initialize SFX_GENERATOR, audio.play_select_sfx.generator
+sfx.select:
+  generator.initialize SFX_GENERATOR, sfx.select.generator
   rts
 
-audio.play_select_sfx.generator:
+sfx.select.generator:
   {cat([
     cat([
       cat([simple_set_sq1(note, volume=volume, duty=2), "jsr yield"]*2)
@@ -70,17 +69,17 @@ audio.play_select_sfx.generator:
 
   generator.end
 
-audio.play_text_sfx:
-  generator.initialize TEXT_SFX_GENERATOR, audio.play_text_sfx.generator
+sfx.text:
+  generator.initialize TEXT_SFX_GENERATOR, sfx.text.generator
   rts
 
-audio.stop_text_sfx:
+sfx.stop_text:
   generator.stop TEXT_SFX_GENERATOR
   rts
 
-audio.play_text_sfx.generator:
+sfx.text.generator:
 --
-  generator.initialize SFX_GENERATOR, audio.play_text_sfx_sfx.generator
+  generator.initialize SFX_GENERATOR, sfx.text_sfx.generator
 
   ; Get a random number between 2 and 6
   jsr random[\x\y]
@@ -97,7 +96,7 @@ audio.play_text_sfx.generator:
   bne -
   jmp --
 
-audio.play_text_sfx_sfx.generator:
+sfx.text_sfx.generator:
   {cat([
     cat([simple_set_noise(period, volume, short), "jsr yield"])
     for period,volume,short in zip(

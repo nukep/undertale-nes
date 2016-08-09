@@ -33,7 +33,7 @@ frisk.battle:
   bne -
 
   ; Encounter!
-  jsr audio.play_alert_sfx
+  jsr sfx.alert
 
   lda #26
   sta frisk.battle.counter
@@ -46,7 +46,7 @@ frisk.battle:
 
   ; Chk chk chk...
   rept 3
-  jsr audio.play_step_sfx
+  jsr sfx.step
   lda #4
   sta frisk.battle.counter
 -
@@ -70,7 +70,7 @@ frisk.battle:
   endr
 
   ; Heart move
-  jsr audio.play_start_battle_sfx
+  jsr sfx.start_battle
 
   lda #0
   sta frisk.battle.counter
