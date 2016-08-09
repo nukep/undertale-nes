@@ -24,8 +24,8 @@ nmi:
 
   jsr joy.read
 
-  jsr graphics.write_draw_buffer
-  jsr graphics.write_oam
+  jsr draw_buffer.write
+  jsr oam.write
   ; There should still be some VBlank cycles left...
   jsr audio.play_sq1
   jsr audio.play_noise
@@ -37,7 +37,7 @@ nmi:
   iterate_generator TEXT_SFX_GENERATOR
   iterate_generator SFX_GENERATOR
   inc $FF
-  jsr graphics.hide_unwritten_oam
+  jsr oam.hide_unwritten_oam
   rti
 
 @call_nmi_loop:

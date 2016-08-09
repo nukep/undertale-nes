@@ -16,6 +16,8 @@ include "graphic_Options.asm"
 {include("audio.asm")}
 {include("sfx.asm")}
 {include("graphics.asm")}
+{include("draw_buffer.asm")}
+{include("oam.asm")}
 {include("text.asm")}
 {include("print-text.asm")}
 {include("animate_lesser_dog.asm")}
@@ -83,8 +85,8 @@ reset:
   lda #%10000000
   sta $2000
 
-  jsr graphics.draw_buffer_init
-  jsr graphics.oam_init
+  jsr draw_buffer.init
+  jsr oam.init
   jsr joy.init
   jsr audio.init
   jsr graphics.initialize_nametable_0
