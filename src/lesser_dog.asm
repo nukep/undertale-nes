@@ -1,4 +1,90 @@
-macro animate_lesser_dog.write_palette color1,color2
+{bytes("lesser_dog.initial_palette", [
+  0x00, 0x30, 0x00, 0x00,
+  0x00, 0x27, 0x30, 0x27,
+  0x00, 0x37, 0x30, 0x0D,
+  0x00, 0x00, 0x00, 0x00,
+
+  0x0D, 0x15, 0x02, 0x03,
+  0x00, 0x30, 0x0D, 0x00,
+  0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00
+])}
+
+lesser_dog.nmi.menu_generator=GENERATOR0
+lesser_dog.nmi.palette_swap_generator=GENERATOR1
+lesser_dog.nmi.head_generator=GENERATOR2
+
+lesser_dog.nmi:
+  ; Draw sprite 0 for the next frame
+  jsr graphics.draw_sprite0_hit
+
+  generator.initialize lesser_dog.nmi.menu_generator, menu
+  generator.initialize lesser_dog.nmi.palette_swap_generator, lesser_dog.palette_swap.generator
+  generator.initialize lesser_dog.nmi.head_generator, lesser_dog.head.generator
+
+  graphic_Options 0,25
+  graphic_LesserDog 13,3
+
+  jsr graphics.draw_text_box
+  jsr graphics.draw_player_stats
+
+  ; Draw Tile for sprite 0 to hit
+  graphics.set_addr_to_xy 0,15
+  lda #undertale_b.chr_27
+  sta $2007
+
+  memcpy_ppu $3F00, lesser_dog.initial_palette, lesser_dog.initial_palette.size
+  generator.iterate lesser_dog.nmi.menu_generator
+  generator.iterate lesser_dog.nmi.head_generator
+
+  nmi.set_loop lesser_dog._nmi_loop
+  rts
+
+lesser_dog._nmi_loop:
+  ; Scroll to the top-left
+  graphics.set_vram_and_fine_x $2000, 0
+
+  ; Turn off NMI and set $1000 Pattern Table for BG and SPR
+  lda #%00011000
+  sta $2000
+
+  ; enable rendering
+  lda #%00011110
+  sta $2001
+
+  ; This must be the first sprite!
+  jsr graphics.draw_sprite0_hit
+
+  generator.iterate lesser_dog.nmi.menu_generator
+  generator.iterate TEXT_GENERATOR
+  generator.iterate lesser_dog.nmi.palette_swap_generator
+  joy.is_button_tapped BUTTON.START
+  bne +
+  lda #1
+  generator.sta_field lesser_dog.nmi.head_generator, lesser_dog.head.grow
++
+  generator.iterate lesser_dog.nmi.head_generator
+
+  ; Wait until Sprite 0 Flag is cleared and also out of vblank
+-
+  bit $2002
+  bvs -
+  ; out of vblank
+  ; sprite 0 flag is cleared.
+
+  ; Wait until Sprite 0 Flag is set
+-
+  bit $2002
+  bvc -
+  ; sprite 0 hit
+
+  ; Turn on NMI and set $0000 Pattern Table for BG
+  lda #%10001000
+  sta $2000
+
+  rts
+
+macro lesser_dog.palette_swap.write_palette color1,color2
   ldx DRAW_BUFFER_SIZE
   txa
   clc
@@ -16,8 +102,8 @@ macro animate_lesser_dog.write_palette color1,color2
   sta DRAW_BUFFER+4,x
 endm
 
-animate_lesser_dog:
-  animate_lesser_dog.write_palette $30,$0F
+lesser_dog.palette_swap.generator:
+  lesser_dog.palette_swap.write_palette $30,$0F
   lda #24
   sta GENVAR0
 -
@@ -25,7 +111,7 @@ animate_lesser_dog:
   dec GENVAR0
   bne -
 
-  animate_lesser_dog.write_palette $0F,$30
+  lesser_dog.palette_swap.write_palette $0F,$30
 
   lda #24
   sta GENVAR0
@@ -34,7 +120,7 @@ animate_lesser_dog:
   dec GENVAR0
   bne -
 
-  beq animate_lesser_dog
+  beq lesser_dog.palette_swap.generator
 
 lesser_dog.head.yield_until_grow:
 -
@@ -54,7 +140,7 @@ lesser_dog.head.x=GENVAR0
 lesser_dog.head.y=GENVAR1
 ; Set lesser_dog.head.grow to 1 before iterating to proceed the generator.
 lesser_dog.head.grow=GENVAR2
-lesser_dog.head:
+lesser_dog.head.generator:
   ; draw first white tiles: (15, 5)
   lda #(8*15+3)
   sta lesser_dog.head.x
