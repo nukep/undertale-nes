@@ -24,7 +24,7 @@ include "graphic_Options.asm"
 {include("frisk.asm")}
 {include("battle.asm")}
 {include("nmi.asm")}
-{include("lesser_dog.asm")}
+{include("battle/lesser_dog/mod.asm")}
 
 reset:
   sei        ; ignore IRQs
