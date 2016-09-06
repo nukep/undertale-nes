@@ -3,74 +3,6 @@
   "LESSER DOG - ATK 7 DEF 0\nWields a stone dogger made of pomer-granite."
 ))}
 
-{bytes_array("LesserDogPet",
-  [text_menu(x) for x in [
-  # 0
-  "You barely lifted your hand and Lesser Dog got excited.",
-  "You lightly touched the Dog.\nIt's already overexcited...",
-  "You pet the Dog.\nIt raises its head up to meet your hand.",
-  "You pet the Dog.\nIt was a good Dog.",
-  "You pet the Dog.\nIts excitement knows no bounds.",
-  "Critical pet!\nDog excitement increased.",
-  "You have to jump up to pet the Dog.",
-  "You don't even pet it.\nIt gets more excited.",
-  "There is no way to stop this madness.",
-  "Lesser Dog enters the realm of the clouds.",
-  "You call the Dog but it is too late.\nIt cannot hear you.",
-  "...",
-  "You can reach Lesser Dog again.",
-  # 13
-  "You pet Lesser Dog.",
-  "It's possible that you may have a problem.",
-  "Lesser Dog is unpettable but appreciates the attempt.",
-  "Perhaps mankind was not meant to pet this much.",
-  "It continues.",
-  "Lesser Dog is beyond your reach.",
-  # 19
-  "Really..."
-]])}
-
-; The index is after pet #<index>. i.e. 0 is after the first pet.
-{lookup_table_lo_hi("LesserDogPetLookup", [
-  "LesserDogPet_"+str(i) for i in [
-    0,1,2,3,4,5,6,7,8,9,10,11,12,
-    *[13] * 6,
-    *[14] * 12,
-    *[15] * 10,
-    16,
-    *[17] * 6,
-    *[18] * 2,
-    19
-  ]
-])}
-
-{bytes_array("LesserDogPetStatus",
-  [text_menu(x) for x in [
-  "Lesser Dog is barking excitedly.",
-  "Lesser Dog is overstimulated.",
-  "Lesser Dog shows no signs of stopping.",
-  "Lesser Dog is lowering.",
-  "Lesser Dog is learning to read.",
-  "Lesser Dog is whining because it can't see you.",
-  "Hello there.",
-  "Lesser Dog is questioning your choices.",
-  "Lesser Dog has gone where no Dog has gone before."
-]])}
-
-; The index is after pet #<index>. i.e. 0 is after the first pet.
-{lookup_table_lo_hi("LesserDogPetStatusLookup", [
-  "LesserDogPetStatus_"+str(i) for i in [
-    *[0]*3,
-    *[1]*4,
-    *[2]*6,
-    *[3]*18,
-    *[4]*2,
-    *[5]*9,
-    *[6]*3,
-    *[7]*7,
-    *[8]*2,
-]])}
-
 {bytes_array("LesserDogNeutral",
   [text_menu(x) for x in [
   "Lesser Dog cocks its head to one side.",
@@ -239,7 +171,7 @@ menu.lesser_dog_act:
   jsr menu.clear_text
   ; Forget the state of the menu and jump right for the battle!
   generator.empty_current_stack
-  jmp lesser_dog_battle
+  jmp lesser_dog.battle
 
 menu.lesser_dog_act_check:
   lda #<(LesserDogCheck)
@@ -262,11 +194,11 @@ menu.lesser_dog_act_check:
   jmp -
 
 menu.lesser_dog_act_pet:
-  lda #<(LesserDogPet_0)
+  lda #<(lesser_dog.pet_0)
   sta type_text.src_lo
-  lda #>(LesserDogPet_0)
+  lda #>(lesser_dog.pet_0)
   sta type_text.src_hi
-  lda #(LesserDogPet_0.size)
+  lda #(lesser_dog.pet_0.size)
   sta type_text.length
   lda #2
   sta type_text.x

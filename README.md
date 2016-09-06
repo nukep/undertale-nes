@@ -22,3 +22,14 @@ $ make
 The build process will create a NES ROM file in bin/main.nes.
 You will need an emulator to play the game.
 I recommend using [FCEUX](http://www.fceux.com/web/home.html).
+
+
+## Install Python with Conda
+
+Conda is a popular package management and virutal environment solution for
+Python.
+
+```
+conda create -n undertale-nes python=3.5 jupyter networkx graphviz
+pip install nxpd
+```

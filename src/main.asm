@@ -20,11 +20,9 @@ include "graphic_Options.asm"
 {include("oam.asm")}
 {include("draw_text.asm")}
 {include("type_text.asm")}
-{include("menu.asm")}
 {include("frisk.asm")}
-{include("battle.asm")}
 {include("nmi.asm")}
-{include("battle/lesser_dog/mod.asm")}
+{include("lesser_dog/mod.asm")}
 
 reset:
   sei        ; ignore IRQs

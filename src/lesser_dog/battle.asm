@@ -1,4 +1,4 @@
-lesser_dog_battle:
+lesser_dog.battle:
   ldx #60
 -
   phx
