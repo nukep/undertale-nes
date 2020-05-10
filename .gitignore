@@ -1,3 +1,5 @@
-bin/
-generated/
+/bin/*
+/generated/*
+!/bin/.gitkeep
+!/generated/.gitkeep
 __pycache__
