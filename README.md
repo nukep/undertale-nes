@@ -9,7 +9,7 @@ It recreates the Lesser Dog battle from Undertale.
 
 ## How to build
 
-You will need gcc, make and Python 3.5 to build this project.
+You will need gcc, make and Python 3.5 to build this project. Building on Linux or Mac will probably give you the best luck.
 
 Simply run `make` in your terminal of choice:
 
@@ -22,14 +22,3 @@ $ make
 The build process will create a NES ROM file in bin/main.nes.
 You will need an emulator to play the game.
 I recommend using [FCEUX](http://www.fceux.com/web/home.html).
-
-
-## Install Python with Conda
-
-Conda is a popular package management and virutal environment solution for
-Python.
-
-```
-conda create -n undertale-nes python=3.5 jupyter networkx graphviz
-pip install nxpd
-```
